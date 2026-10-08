@@ -12,7 +12,7 @@
  * Re-runnable and offline: it never touches the network.
  */
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import * as cheerio from 'cheerio'
 
@@ -341,7 +341,7 @@ async function main() {
   const state = JSON.parse(await readFile(join(CACHE, 'state.json'), 'utf8'))
   const ok = Object.entries(state.pages).filter(([, p]) => p.status === 200 && p.file)
 
-  await rm(join(OUT_PUBLIC, 'pages'), { recursive: true, force: true })
+  // Update in place (rather than wiping the folder) so dev-server file watchers stay consistent.
   await mkdir(join(OUT_PUBLIC, 'pages'), { recursive: true })
   await mkdir(OUT_SRC, { recursive: true })
 
@@ -356,10 +356,16 @@ async function main() {
     const html = await readFile(join(CACHE, meta.file), 'utf8')
     const $ = cheerio.load(html)
     $('script, style, noscript').remove()
+    // Cloudflare obfuscates e-mail labels too; restore the readable address.
+    $('.__cf_email__[data-cfemail]').each((_, el) => {
+      $(el).replaceWith(escapeHtml(decodeCfEmail($(el).attr('data-cfemail'))))
+    })
+    // Pagers, filter forms and screen-reader-only Drupal headings are listing chrome, not content.
+    $('.pager, .pagination, .element-invisible, .visually-hidden, form').remove()
 
     const lang = path.startsWith('/it') ? 'it' : 'en'
     const title = clean($('.page_content h1').first().text()) || clean($('meta[property="og:title"]').attr('content')) || clean($('title').text()).replace(/\s*\|\s*USI.*$/, '')
-    const description = clean($('meta[name="description"]').attr('content'))
+    const description = clean($('meta[name="description"]').attr('content')).replace(/[\s|·–-]+$/, '')
     const alternates = {}
     $('link[rel="alternate"][hreflang]').each((_, el) => {
       const href = normalizeHref($(el).attr('href'))
@@ -460,6 +466,12 @@ async function main() {
   const enPaths = new Set(programmes.filter((p) => p.lang === 'en').map((p) => p.path))
   const deduped = programmes.filter((p) => p.lang === 'en' || !(p.alternates.en && enPaths.has(p.alternates.en)))
   deduped.forEach((p) => delete p.alternates)
+
+  // Remove page files for pages that no longer exist.
+  const live = new Set(index.map((e) => `${e.id}.json`))
+  for (const f of await readdir(join(OUT_PUBLIC, 'pages'))) {
+    if (!live.has(f)) await rm(join(OUT_PUBLIC, 'pages', f))
+  }
 
   index.sort((a, b) => a.path.localeCompare(b.path))
   const events = [...eventMap.values()]

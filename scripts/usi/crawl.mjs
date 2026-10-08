@@ -117,7 +117,7 @@ async function main() {
     const url = ORIGIN + encodeURI(path)
     let res
     try {
-      res = await fetch(url, { headers: { 'user-agent': UA, 'accept-language': 'en' }, redirect: 'follow' })
+      res = await fetch(url, { headers: { 'user-agent': UA, 'accept-language': 'en' }, redirect: 'follow', signal: AbortSignal.timeout(30_000) })
     } catch (err) {
       console.warn(`network error ${path}: ${err.message}`)
       state.queue.push(path)
@@ -125,7 +125,15 @@ async function main() {
       continue
     }
 
-    const body = await res.text()
+    let body
+    try {
+      body = await res.text()
+    } catch (err) {
+      console.warn(`body read failed ${path}: ${err.message}`)
+      state.queue.push(path)
+      await sleep(delay * 3)
+      continue
+    }
     const challenged = res.status === 403 && /Just a moment/i.test(body)
     const entry = { status: challenged ? 'blocked' : res.status, finalUrl: res.url, fetchedAt: new Date().toISOString() }
 
