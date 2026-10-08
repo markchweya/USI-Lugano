@@ -1,11 +1,11 @@
 {
-  "pages": 50,
-  "pagesEn": 50,
+  "pages": 80,
+  "pagesEn": 80,
   "pagesIt": 0,
-  "programmes": 3,
-  "events": 8,
-  "blocks": 180,
-  "words": 22220,
-  "images": 14,
-  "generatedAt": "2026-10-08T15:11:34.062Z"
+  "programmes": 9,
+  "events": 28,
+  "blocks": 256,
+  "words": 29771,
+  "images": 27,
+  "generatedAt": "2026-10-08T15:53:30.427Z"
 }

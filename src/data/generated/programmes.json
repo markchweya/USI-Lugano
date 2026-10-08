@@ -48,5 +48,103 @@
   "languages": [
    "IT"
   ]
+ },
+ {
+  "id": "ab1c33053324",
+  "path": "/en/education/bachelor/informatics",
+  "lang": "en",
+  "level": "bachelor",
+  "slug": "informatics",
+  "title": "Informatics",
+  "fullTitle": "Bachelor in Informatics",
+  "summary": "Discover our degree and register today to the best Bachelor's in Informatics. Internationally recognised centre of research and teaching in advanced informatics.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-1.jpg?itok=C3yWEXc5",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "039f169c5669",
+  "path": "/en/education/bachelor/data-science",
+  "lang": "en",
+  "level": "bachelor",
+  "slug": "data-science",
+  "title": "Data Science",
+  "fullTitle": "Bachelor in Data Science",
+  "summary": "In the A.Y. 2024/25, the USI Faculty of Informatics and Faculty of Economics join forces to launch an innovative Bachelor in Data Science that will equip students with the necessary skills and knowledge to navigate the increasingly data-dri",
+  "faculty": "informatics",
+  "image": null,
+  "apply": "/en/education-application",
+  "ects": 180,
+  "semesters": 6,
+  "languages": []
+ },
+ {
+  "id": "2cdcb4e5603a",
+  "path": "/en/education/master/history-and-theory-of-art-and-architecture",
+  "lang": "en",
+  "level": "master",
+  "slug": "history-and-theory-of-art-and-architecture",
+  "title": "History and Theory of Art and Architecture",
+  "fullTitle": "Master in History and Theory of Art and Architecture",
+  "summary": "This Master's degree includes both the study of the history of architecture and art history and it is aiming at reversing the growing marginalisation of architecture art history studies.",
+  "faculty": "architecture",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mstaa_content.jpg?itok=IMvMlPdk",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "b23c9ee94e3b",
+  "path": "/en/education/master/oncology",
+  "lang": "en",
+  "level": "master",
+  "slug": "oncology",
+  "title": "Oncology, Translational Immunology and Aging",
+  "fullTitle": "Master in Oncology, Translational Immunology and Aging",
+  "summary": "The Master of Science in Oncology, Translational Immunology and Aging (MOTIA) is an advanced, research-oriented graduate programme offered by the Faculty of Biomedical Sciences at Università della Svizzera italiana (USI). The programme is d",
+  "faculty": "biomedical-sciences",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-motia.jpg?itok=GMn11nlC",
+  "apply": null,
+  "ects": 60,
+  "semesters": 2,
+  "languages": [
+   "EN"
+  ]
+ },
+ {
+  "id": "86e8eba70182",
+  "path": "/en/education/master/public-management-and-policy",
+  "lang": "en",
+  "level": "master",
+  "slug": "public-management-and-policy",
+  "title": "Public Management and Policy (PMP)",
+  "fullTitle": "Master in Public Management and Policy (PMP)",
+  "summary": "Get a Swiss master's degree in public management and policy. You will have great career opportunities in the public sector, in NGOs, and many other areas.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-pmp_copertina_2.jpg?itok=j-ytpYKq",
+  "apply": "/en/education-application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": []
+ },
+ {
+  "id": "57e1ecc9a6f3",
+  "path": "/en/education/master/interreligious-dialogue",
+  "lang": "en",
+  "level": "master",
+  "slug": "interreligious-dialogue",
+  "title": "Interreligious Dialogue: Science, Philosophy and Theology of Religions",
+  "fullTitle": "Master of Arts in Interreligious Dialogue: Science, Philosophy and Theology of Religions",
+  "summary": "Recognizing the growing need for individuals with a profound understanding of major world religions and the ability to engage in meaningful interreligious dialogue, the Master of Arts in Interreligious Dialogue: Science, Philosophy and Theo",
+  "faculty": "theology",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-immagine_copertina_mid.jpg?itok=jBbxt9RZ",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": []
  }
 ]
