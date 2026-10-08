@@ -316,9 +316,9 @@ function mostFrequent(values) {
  * mention (e.g. a Master page citing the 180 ECTS Bachelor prerequisite) loses.
  */
 function programmeFacts(text, level) {
-  const plausible = [60, 90, 120, 180, 240, 270, 300, 360]
-  let ectsValues = [...text.matchAll(/(\d{2,3})\s*(?:ECTS|crediti|credits)/gi)].map((m) => Number(m[1])).filter((v) => plausible.includes(v))
-  if (level === 'master' && ectsValues.some((v) => v !== 180)) ectsValues = ectsValues.filter((v) => v !== 180)
+  // Only credit totals that fit the degree level count; anything else is a stray mention.
+  const plausible = level === 'bachelor' ? [180] : [90, 120]
+  const ectsValues = [...text.matchAll(/(\d{2,3})\s*(?:ECTS|crediti|credits)/gi)].map((m) => Number(m[1])).filter((v) => plausible.includes(v))
   const ects = mostFrequent(ectsValues)
 
   const durations = [...text.matchAll(/\b(\d|one|two|three|four|five|six|due|tre|quattro|sei)[\s-]+(semesters?|semestri|years?|anni)\b/gi)].map((m) =>
@@ -454,7 +454,8 @@ async function main() {
       title: c.title.replace(/^(Bachelor|Master)( of (Science|Arts))?( in)?\s+/i, ''),
       fullTitle: c.title,
       summary: c.description || clean(c.text).slice(0, 240),
-      faculty: guessFaculty(`${c.title} ${c.description} ${c.crumbs.map((x) => x.label).join(' ')}`),
+      // The title is the strongest signal; fall back to description and breadcrumbs.
+      faculty: guessFaculty(c.title) ?? guessFaculty(`${c.description} ${c.crumbs.map((x) => x.label).join(' ')}`),
       image: c.firstImage,
       apply: c.ctas[0]?.href ?? null,
       ...programmeFacts(family.join(' '), c.level),

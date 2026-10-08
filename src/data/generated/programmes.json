@@ -11,7 +11,7 @@
   "faculty": "architecture",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-arc-1.jpg?itok=lcgNYapX",
   "apply": "/en/education-application",
-  "ects": null,
+  "ects": 180,
   "semesters": 6,
   "languages": []
  },
@@ -28,8 +28,11 @@
   "image": null,
   "apply": "/en/education-application",
   "ects": null,
-  "semesters": null,
-  "languages": []
+  "semesters": 6,
+  "languages": [
+   "EN",
+   "IT"
+  ]
  },
  {
   "id": "608c7f1df033",
@@ -44,8 +47,9 @@
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-eco-1.jpg?itok=Wx8imYVW",
   "apply": "/en/education-application",
   "ects": null,
-  "semesters": null,
+  "semesters": 6,
   "languages": [
+   "EN",
    "IT"
   ]
  },
@@ -62,7 +66,7 @@
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-1.jpg?itok=C3yWEXc5",
   "apply": "/en/education-application",
   "ects": null,
-  "semesters": null,
+  "semesters": 6,
   "languages": []
  },
  {
@@ -93,8 +97,8 @@
   "faculty": "architecture",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mstaa_content.jpg?itok=IMvMlPdk",
   "apply": "/en/education-application",
-  "ects": null,
-  "semesters": null,
+  "ects": 120,
+  "semesters": 4,
   "languages": []
  },
  {
@@ -109,8 +113,8 @@
   "faculty": "biomedical-sciences",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-motia.jpg?itok=GMn11nlC",
   "apply": null,
-  "ects": 60,
-  "semesters": 2,
+  "ects": null,
+  "semesters": null,
   "languages": [
    "EN"
   ]
@@ -129,7 +133,10 @@
   "apply": "/en/education-application",
   "ects": 120,
   "semesters": 4,
-  "languages": []
+  "languages": [
+   "EN",
+   "IT"
+  ]
  },
  {
   "id": "57e1ecc9a6f3",
@@ -142,6 +149,124 @@
   "summary": "Recognizing the growing need for individuals with a profound understanding of major world religions and the ability to engage in meaningful interreligious dialogue, the Master of Arts in Interreligious Dialogue: Science, Philosophy and Theo",
   "faculty": "theology",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-immagine_copertina_mid.jpg?itok=jBbxt9RZ",
+  "apply": "/en/education-application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": []
+ },
+ {
+  "id": "304e68dd5771",
+  "path": "/en/education/master/financial-technology-and-computing",
+  "lang": "en",
+  "level": "master",
+  "slug": "financial-technology-and-computing",
+  "title": "Financial Technology and Computing",
+  "fullTitle": "Master in Financial Technology and Computing",
+  "summary": "Study Finance and Computing at USI. Excel in new currencies, robo investing, crowlending, algo trading. Accredited by the Swiss Finance Institute.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-2.jpg?itok=FQvYMd-b",
+  "apply": "/en/education-application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": [
+   "EN"
+  ]
+ },
+ {
+  "id": "4ca378decc0c",
+  "path": "/en/education/master/cognitive-psychology-health-communication",
+  "lang": "en",
+  "level": "master",
+  "slug": "cognitive-psychology-health-communication",
+  "title": "Cognitive Psychology in Health Communication",
+  "fullTitle": "Master in Cognitive Psychology in Health Communication",
+  "summary": "Joint Master in Cognitive Psychology: study neuroscience, communication, and management. Prepare yourself for a career in health, both in public and private sectors.",
+  "faculty": "communication",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-com-3.jpg?itok=lCRnYdOr",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": 4,
+  "languages": []
+ },
+ {
+  "id": "967259ed438e",
+  "path": "/en/education/master/investor-relations-financial-communication",
+  "lang": "en",
+  "level": "master",
+  "slug": "investor-relations-financial-communication",
+  "title": "European Studies in Investor Relations and Financial Communication",
+  "fullTitle": "Master in European Studies in Investor Relations and Financial Communication",
+  "summary": "With a Master in European Studies in Investor Relations you will learn to understand finance and to communicate withinvestors ands takeholders",
+  "faculty": "communication",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-rocci.jpg?itok=m5Q9UPDO",
+  "apply": "/en/education/master/investor-relations-financial-communication/application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": [
+   "EN"
+  ]
+ },
+ {
+  "id": "67d0cf437e99",
+  "path": "/en/education/master/digital-fashion-communication",
+  "lang": "en",
+  "level": "master",
+  "slug": "digital-fashion-communication",
+  "title": "Digital Fashion Communication",
+  "fullTitle": "Master in Digital Fashion Communication",
+  "summary": "Be part of the first international Master in Digital Fashion Communication offered as a double degree by USI and Université Paris 1 Panthéon-Sorbonne",
+  "faculty": "communication",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mdfc-webpage-1.jpg?itok=Cu7Bz56G",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "2cf85cce621d",
+  "path": "/en/education/master/international-tourism",
+  "lang": "en",
+  "level": "master",
+  "slug": "international-tourism",
+  "title": "International Tourism",
+  "fullTitle": "Master in International Tourism",
+  "summary": "Become part of our USI Master in International Tourism family to co-create the sustainable future of travel and tourism.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mt-webpage-1.jpg?itok=0Rg56AYt",
+  "apply": "/en/education-application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": []
+ },
+ {
+  "id": "3c181df0c8e9",
+  "path": "/en/education/master/economics",
+  "lang": "en",
+  "level": "master",
+  "slug": "economics",
+  "title": "Economics",
+  "fullTitle": "Master in Economics",
+  "summary": "Study at USI and get a Master's Degree in Economics. Become an expert in micro and macro economics, policy, finance, globalization, sustainability and more.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-usi_funk.03.jpg?itok=d8WGEz20",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": [
+   "EN"
+  ]
+ },
+ {
+  "id": "b4f164672b8f",
+  "path": "/en/education/master/informatics",
+  "lang": "en",
+  "level": "master",
+  "slug": "informatics",
+  "title": "Informatics",
+  "fullTitle": "Master in Informatics",
+  "summary": "The Master of Science in Informatics provides world-class education and aims to train experts for the highly competitive software industry of the 21st century.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-6.jpg?itok=VBdrbUzT",
   "apply": "/en/education-application",
   "ects": null,
   "semesters": null,
