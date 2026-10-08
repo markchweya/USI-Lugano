@@ -1,0 +1,52 @@
+[
+ {
+  "id": "f9aa52ee73b9",
+  "path": "/en/education/bachelor/architecture",
+  "lang": "en",
+  "level": "bachelor",
+  "slug": "architecture",
+  "title": "Architecture",
+  "fullTitle": "Bachelor in Architecture",
+  "summary": "Study Architecture at the Accademia. Bachelor + Master + PhD. Renowned teachers and innovative approach. Enroll right now and become an architect.",
+  "faculty": "architecture",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-arc-1.jpg?itok=lcgNYapX",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": 6,
+  "languages": []
+ },
+ {
+  "id": "6109988088b7",
+  "path": "/en/education/bachelor/communication",
+  "lang": "en",
+  "level": "bachelor",
+  "slug": "communication",
+  "title": "Communication",
+  "fullTitle": "Bachelor in Communication",
+  "summary": "Study communication in the most international university of Switzerland. Discover our innovative approach and the three specializations available.",
+  "faculty": "communication",
+  "image": null,
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "608c7f1df033",
+  "path": "/en/education/bachelor/economics",
+  "lang": "en",
+  "level": "bachelor",
+  "slug": "economics",
+  "title": "Economics",
+  "fullTitle": "Bachelor in Economics",
+  "summary": "The Bachelor in Economics provides students a solid background and offers specialisations in finance, management, economics and quantitative methods.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-eco-1.jpg?itok=Wx8imYVW",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": null,
+  "languages": [
+   "IT"
+  ]
+ }
+]
