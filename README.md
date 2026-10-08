@@ -22,6 +22,12 @@ npm run build      # type-check + production build
 npm test           # unit tests (vitest)
 ```
 
+## Deployment
+
+Live at **https://markchweya.github.io/USI-Lugano/**.
+
+Every push to `main` or `ChweyasBranch` runs `.github/workflows/deploy-pages.yml`: install → test → build with `BASE_PATH=/USI-Lugano/` → `scripts/static-routes.mjs` → publish `dist/` to the `gh-pages` branch. The static-routes step writes a real `index.html` for every page (HTTP 200, per-page title, description and canonical URL), with `404.html` as the single-page-app fallback.
+
 ## Content pipeline
 
 ```

@@ -80,7 +80,7 @@ const filtersOpen = ref(false)
           <label for="q" class="label">Search</label>
           <div class="search">
             <UiIcon name="search" :size="16" />
-            <input id="q" v-model="qInput" type="search" placeholder="e.g. finance, AI, architecture" autocomplete="off" />
+            <input id="q" v-model="qInput" type="search" placeholder="e.g. finance, AI" autocomplete="off" />
           </div>
         </div>
 
@@ -181,6 +181,7 @@ const filtersOpen = ref(false)
 }
 .filters {
   display: none;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.75rem;
   padding: 1.5rem;
   border: 1px solid var(--line);
@@ -229,6 +230,7 @@ const filtersOpen = ref(false)
 }
 .search input {
   flex: 1;
+  width: 100%;
   min-width: 0;
   border: 0;
   outline: 0;
