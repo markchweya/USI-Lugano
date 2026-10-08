@@ -168,7 +168,7 @@ async function main() {
     state.pages[path] = entry
     const n = fetched()
     console.log(`[${n}/${MAX_PAGES}] ${entry.status} ${path}  (queue ${state.queue.length}${state.itQueue ? ` + it ${state.itQueue.length}` : ''})`)
-    if (n % 10 === 0) await save()
+    await save() // every page: the host can be torn down at any moment
     await sleep(delay)
   }
 
