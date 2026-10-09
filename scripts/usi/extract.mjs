@@ -25,7 +25,14 @@ const OUT_SRC = join(ROOT, 'src/data/generated')
 const ORIGIN = 'https://www.usi.ch'
 
 const id = (path) => createHash('sha1').update(path).digest('hex').slice(0, 12)
-const clean = (s = '') => s.replace(/[\u200b-\u200d\ufeff]/g, '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()
+// usi.ch leaks URL-encoded punctuation (%2C, %26…) into some headings: decode it.
+const clean = (s = '') =>
+  s
+    .replace(/%2([0-9A-F])/gi, (_, h) => String.fromCharCode(parseInt('2' + h, 16)))
+    .replace(/[\u200b-\u200d\ufeff]/g, '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 
 /* ------------------------------------------------------------------ */
 /* Sanitiser: keeps a small, safe subset of inline/block markup.       */
