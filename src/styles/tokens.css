@@ -13,16 +13,16 @@
   --surface-raised: #ffffff;
   --ink: #0e1620;
   --ink-2: #3a4552;
-  --ink-3: #6b7480;
+  --ink-3: #5f6873; /* ≥4.5:1 on paper, surface and paper-2 (WCAG AA) */
   --line: rgb(14 22 32 / 0.11);
   --line-strong: rgb(14 22 32 / 0.22);
 
   /* Brand */
   --lake: #1c5a73;
   --lake-soft: rgb(28 90 115 / 0.1);
-  --signal: #e8502e;
+  --signal: #c2401b; /* 5.2:1 with white text, 4.6:1 as text on paper */
   --signal-ink: #ffffff;
-  --signal-soft: rgb(232 80 46 / 0.12);
+  --signal-soft: rgb(194 64 27 / 0.12);
 
   /* Faculty palette */
   --fac-architecture: #b8532c;

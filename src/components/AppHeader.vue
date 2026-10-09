@@ -111,7 +111,7 @@ const levelCounts = computed(() => ({
       </nav>
 
       <div class="actions">
-        <button type="button" class="search-btn" @click="palette.open()">
+        <button type="button" class="search-btn" :aria-label="m.nav.search" @click="palette.open()">
           <UiIcon name="search" :size="16" />
           <span class="search-label">{{ m.nav.search }}</span>
           <kbd class="kbd">{{ isMac ? '⌘' : 'Ctrl' }} K</kbd>

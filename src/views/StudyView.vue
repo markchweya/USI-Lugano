@@ -128,7 +128,8 @@ const filtersOpen = ref(false)
         <button v-if="activeCount" type="button" class="reset" @click="reset">{{ m.study.clear }}</button>
       </aside>
 
-      <section class="results" aria-live="polite">
+      <section class="results" aria-live="polite" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="visually-hidden">{{ m.palette.results }}</h2>
         <div class="toolbar">
           <p class="result-count">
             <strong>{{ filtered.length }}</strong> {{ m.study.count(filtered.length) }}
