@@ -37,10 +37,28 @@ Audience: prospective and current students, researchers and partners in German-s
 | research institute | Forschungsinstitut |
 | start-up | Start-up |
 | Home (breadcrumb) | Startseite |
+| Student Corporation | Studierendenschaft |
+| Student Council / General Assembly | Studierendenrat / Studierendenvollversammlung |
+| University Council / Academic Senate / Rectorate | Universitätsrat / Akademischer Senat / Rektorat |
+| Faculty Council | Fakultätsrat |
+| International Relations (and Study Abroad) Service | Dienst für Internationale Beziehungen (und Auslandstudium) |
+| Equal Opportunities Service | Dienst für Chancengleichheit |
+| Research Service / Research and Transfer Service | Forschungsdienst / Dienst für Forschung und Wissenstransfer |
+| Housing Service | Wohnungsdienst |
+| Institutional Communication Service | Dienst für institutionelle Kommunikation |
+| Quality Assurance and Sustainability Service | Dienst für Qualitätssicherung und Nachhaltigkeit |
+| Career Service, Alumni Service, Sport Service, InfoDesk, eLab | unchanged (names German speakers use as-is) |
+| SERI / FCS | SBFI / ESKAS |
+| Fall / Spring semester (FS26 / SS27) | Herbstsemester / Frühjahrssemester (HS26 / FS27) |
+| bike | Velo |
+
+Office names follow this table; `scripts/i18n/normalize.mjs` enforces it on the translation memory.
+Well-known quotations keep their established German wording (often du-form).
 
 ## Do not translate
+- Numbers: thousands separator is the Swiss apostrophe (CHF 5’000); times as 7.30–12.00 Uhr.
 - Official degree titles (e.g. «Master of Science in Artificial Intelligence», «Bachelor of Science in Informatics»): keep as is.
-- Names of people, institutes, offices, projects, journals, events, buildings and streets (IDSIA, Euler Institute, InfoDesk, Via Buffi 13…).
+- Names of people, institutes, projects, journals, events, buildings and streets (IDSIA, Euler Institute, InfoDesk, Via Buffi 13…). Offices: see the terminology table.
 - Italian-language proper names and titles of Italian-taught programmes.
 - URLs, e-mail addresses, phone numbers, course codes, dates and numbers (keep digits as given).
 - Acronyms (ECTS, CHF, SNSF→SNF only when the full name is translated alongside).
