@@ -121,6 +121,13 @@ export function tidyDescription(text) {
   return `${text.slice(0, lastSpace > 0 ? lastSpace : text.length).replace(/[\s,;:–-]+$/, '')}…`
 }
 
+/** A few usi.ch breadcrumbs expose internal slugs instead of names. */
+const CRUMB_FIXES = {
+  Relint: { en: 'International Relations', it: 'Relazioni internazionali' },
+  Piuitaliano: { en: '+italiano', it: '+italiano' },
+}
+const crumbLabel = (label, lang) => CRUMB_FIXES[label]?.[lang] ?? label
+
 /* ------------------------------------------------------------------ */
 /* Images                                                              */
 /* ------------------------------------------------------------------ */
@@ -390,7 +397,7 @@ async function main() {
     const crumbs = []
     $('.breadcrumb li').each((_, li) => {
       const a = $(li).find('a')
-      crumbs.push({ label: clean($(li).text()), path: a.length ? normalizeHref(a.attr('href')) : null })
+      crumbs.push({ label: crumbLabel(clean($(li).text()), lang), path: a.length ? normalizeHref(a.attr('href')) : null })
     })
 
     const mainCol = $('.page_content .large-9').first()
