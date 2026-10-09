@@ -1,0 +1,21 @@
+<main id="gate" class="gate" aria-labelledby="gate-title">
+  <div class="gate__card">
+    <p class="gate__mark" aria-hidden="true">USI</p>
+    <p class="gate__eyebrow" data-i18n="eyebrow">Università della Svizzera italiana</p>
+    <h1 id="gate-title" class="gate__title"><span data-i18n="title">Legacy Edition</span></h1>
+    <p class="gate__lede" data-i18n="lede">A private preview of the USI website, rebuilt from scratch on a front-end stack the industry retired.</p>
+    <form class="gate__form" novalidate>
+      <label class="gate__label" for="gate-password" data-i18n="label">Password</label>
+      <div class="gate__field">
+        <input id="gate-password" name="password" type="password" autocomplete="current-password" required spellcheck="false" autocapitalize="off" aria-describedby="gate-status">
+        <button type="button" class="gate__reveal" aria-pressed="false" data-i18n="show">Show</button>
+      </div>
+      <button type="submit" class="gate__submit"><span data-i18n="unlock">Unlock</span></button>
+      <p id="gate-status" class="gate__status" role="status" aria-live="polite"></p>
+    </form>
+    <ul class="gate__stack" aria-label="Stack">
+      <li>CoffeeScript</li><li>Backbone</li><li>jQuery</li><li>Underscore</li><li>Handlebars</li><li>RequireJS</li><li>LESS</li><li>Grunt</li><li>Moment.js</li>
+    </ul>
+  </div>
+  <p class="gate__note" data-i18n="note">Encrypted with AES-256-GCM. Your password never leaves this browser.</p>
+</main>

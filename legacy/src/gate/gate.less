@@ -1,0 +1,163 @@
+// The gate shares the app's tokens so the hand-over is seamless.
+@import (reference) '../less/mixins.less';
+@import '../less/tokens.less';
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1rem/1.55 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gate {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, var(--lake-soft), transparent 60%),
+    radial-gradient(50rem 30rem at -10% 110%, var(--signal-soft), transparent 60%),
+    var(--paper);
+  opacity: 0;
+  transition: opacity .3s ease;
+  .gate-ready & { opacity: 1; }
+}
+
+.gate__card {
+  width: 100%;
+  max-width: 27rem;
+  padding: 2.25rem 2rem 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  .is-wrong & { animation: gate-shake .4s ease; }
+}
+
+.gate__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 0 1.5rem;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 1rem/1 Georgia, 'Times New Roman', serif;
+  letter-spacing: .02em;
+}
+
+.gate__eyebrow {
+  margin: 0 0 .35rem;
+  color: var(--ink-3);
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.gate__title {
+  margin: 0 0 .75rem;
+  font: 400 2.4rem/1.05 Georgia, 'Iowan Old Style', serif;
+  letter-spacing: -.02em;
+}
+
+.gate__lede { margin: 0 0 1.75rem; color: var(--ink-2); }
+
+.gate__label { display: block; margin-bottom: .4rem; font-weight: 600; font-size: .9rem; }
+
+.gate__field {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  transition: border-color .2s, box-shadow .2s;
+  &:focus-within { border-color: var(--lake); box-shadow: 0 0 0 3px var(--lake-soft); }
+  .is-wrong & { border-color: var(--signal); }
+}
+
+.gate__field input {
+  flex: 1;
+  min-width: 0;
+  padding: .8rem .9rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.05rem;
+  outline: none;
+}
+
+.gate__reveal {
+  padding: 0 .9rem;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+  &:hover { color: var(--ink); }
+  &:focus-visible { outline: 2px solid var(--lake); outline-offset: -4px; border-radius: 8px; }
+}
+
+.gate__submit {
+  width: 100%;
+  margin-top: 1rem;
+  padding: .85rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--signal);
+  color: var(--signal-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, filter .15s;
+  &:hover { filter: brightness(1.06); }
+  &:active { transform: scale(.985); }
+  &:focus-visible { outline: 3px solid var(--lake); outline-offset: 3px; }
+  &[disabled] { cursor: progress; opacity: .7; }
+}
+
+.gate__status {
+  min-height: 1.5em;
+  margin: .75rem 0 0;
+  color: var(--ink-2);
+  font-size: .9rem;
+  &.is-error { color: var(--signal); }
+}
+
+.gate__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+  li {
+    padding: .2rem .6rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-3);
+    font-size: .75rem;
+  }
+}
+
+.gate__note { max-width: 27rem; margin: 0; color: var(--ink-3); font-size: .8rem; text-align: center; }
+
+@keyframes gate-shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate, .gate__card { transition: none; animation: none !important; }
+}
