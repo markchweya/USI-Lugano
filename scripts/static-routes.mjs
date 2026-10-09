@@ -18,6 +18,7 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 
 const template = await readFile(join(DIST, 'index.html'), 'utf8')
 const index = JSON.parse(await readFile(join(DIST, 'content/index.json'), 'utf8'))
+const known = new Set(index.map((e) => e.path))
 
 // App pages per language, with localised slugs and titles (kept in sync with src/i18n).
 const app = {
@@ -26,20 +27,39 @@ const app = {
   de: { lang: 'de', home: 'Startseite', study: ['studiengaenge', 'Studiengang finden'], explore: ['entdecken', 'Entdecken'], desc: 'Università della Svizzera italiana — eine junge, internationale Universität in Lugano, Schweiz.' },
 }
 
+const appAlternates = (page) =>
+  Object.fromEntries(Object.entries(app).map(([l, a]) => [l, page === 'home' ? `/${l}` : `/${l}/${a[page][0]}`]))
+
 const routes = [
   ...Object.entries(app).flatMap(([l, a]) => [
-    { path: `/${l}`, title: null, description: a.desc, lang: a.lang },
-    { path: `/${l}/${a.study[0]}`, title: a.study[1], description: a.desc, lang: a.lang },
-    { path: `/${l}/${a.explore[0]}`, title: a.explore[1], description: a.desc, lang: a.lang },
+    { path: `/${l}`, title: null, description: a.desc, lang: a.lang, alternates: appAlternates('home') },
+    { path: `/${l}/${a.study[0]}`, title: a.study[1], description: a.desc, lang: a.lang, alternates: appAlternates('study') },
+    { path: `/${l}/${a.explore[0]}`, title: a.explore[1], description: a.desc, lang: a.lang, alternates: appAlternates('explore') },
   ]),
-  ...index.map((e) => ({ path: e.path, title: e.title, description: e.description, lang: e.lang })),
+  ...(await Promise.all(
+    index.map(async (e) => {
+      const page = JSON.parse(await readFile(join(DIST, 'content/pages', `${e.id}.json`), 'utf8'))
+      // Only advertise alternates that actually exist as pages.
+      const alternates = Object.fromEntries(Object.entries(page.alternates ?? {}).filter(([, p]) => known.has(p)))
+      return { path: e.path, title: e.title, description: e.description, lang: e.lang, alternates }
+    }),
+  )),
 ]
 
-function render({ path, title, description, lang }) {
+function render({ path, title, description, lang, alternates }) {
   let html = template.replace(/<title>[^<]*<\/title>/, `<title>${esc(title ? `${title} · ${SUFFIX}` : SUFFIX)}</title>`)
   html = html.replace('<html lang="en">', `<html lang="${lang}">`)
   if (description) html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(description)}$2`)
-  if (SITE) html = html.replace('</head>', `    <link rel="canonical" href="${esc(SITE + encodeURI(path))}" />\n  </head>`)
+  if (SITE) {
+    const links = [`<link rel="canonical" href="${esc(SITE + encodeURI(path))}" />`]
+    const alts = Object.entries(alternates ?? {})
+    if (alts.length > 1) {
+      for (const [l, p] of alts) links.push(`<link rel="alternate" hreflang="${l}" href="${esc(SITE + encodeURI(p))}" />`)
+      const fallback = alternates.en ?? alts[0][1]
+      links.push(`<link rel="alternate" hreflang="x-default" href="${esc(SITE + encodeURI(fallback))}" />`)
+    }
+    html = html.replace('</head>', `    ${links.join('\n    ')}\n  </head>`)
+  }
   return html
 }
 
