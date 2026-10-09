@@ -1,0 +1,1 @@
+{"v":2,"kdf":{"name":"PBKDF2","hash":"SHA-256","iterations":600000,"salt":"hfcVkNzppXhVgI0tdi3Jjg=="},"cipher":{"name":"AES-GCM","iv":"olJeLnJjb83KiG7U"},"compression":"gzip","data":"vault.bin"}

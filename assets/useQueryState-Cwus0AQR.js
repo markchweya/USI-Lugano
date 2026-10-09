@@ -1,0 +1,1 @@
+import{i as e,m as t,r as n}from"./vendor-wIx_QNUR.js";function r(r,i=``){let a=n(),o=e();return t({get:()=>{let e=a.query[r];return(Array.isArray(e)?e[0]:e)??i},set:e=>{let t={...a.query};!e||e===i?delete t[r]:t[r]=e,o.replace({query:t})}})}export{r as t};
