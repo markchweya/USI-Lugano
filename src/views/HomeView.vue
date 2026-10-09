@@ -11,7 +11,7 @@ import events from '@/data/generated/events.json'
 import stats from '@/data/generated/stats.json'
 import { useCommandPalette } from '@/composables/useCommandPalette'
 import { useI18n } from '@/i18n'
-import LakeScene from '@/components/home/LakeScene.vue'
+import HeroPhoto from '@/components/home/HeroPhoto.vue'
 import ProgrammeCard from '@/components/ProgrammeCard.vue'
 import FacultyArt from '@/components/ui/FacultyArt.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
@@ -112,7 +112,7 @@ const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.
         </button>
       </div>
       <div class="hero-art">
-        <LakeScene />
+        <HeroPhoto />
       </div>
     </section>
 
@@ -260,14 +260,20 @@ const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.
     grid-template-columns: 1.1fr 1fr;
   }
 }
+.hero > * {
+  min-width: 0; /* let grid columns shrink below their content's width */
+}
 .hero-title {
+  overflow-wrap: break-word;
+  hyphens: auto;
   margin-top: 1.25rem;
   font-size: var(--step-5);
   line-height: 0.98;
   letter-spacing: -0.035em;
 }
 .hero-title--long {
-  font-size: clamp(2.6rem, 1.6rem + 3.6vw, 5.4rem);
+  /* Long single words (verantwortungsvoll, responsabilmente) must fit a 390px phone. */
+  font-size: clamp(2.1rem, 1.2rem + 3.9vw, 5.4rem);
 }
 .hero-lede {
   max-width: 52ch;
@@ -292,6 +298,8 @@ const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.
   display: inline-flex;
   align-items: baseline;
   gap: 0.45rem;
+  min-width: 0;
+  max-width: 100%;
 }
 .intent-k {
   color: var(--ink-3);
@@ -309,6 +317,9 @@ const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.
   font-size: var(--step-1);
   color: var(--ink);
   cursor: pointer;
+  min-width: 0;
+  max-width: 100%;
+  text-overflow: ellipsis;
 }
 .intent select option {
   background: var(--surface);
