@@ -186,6 +186,7 @@ const it: Messages = {
     semesters: (n) => (n === 1 ? '1 semestre' : `${n} semestri`),
     pageInItalian: 'Pagina in italiano',
     translated: 'Tradotto',
+    englishOnly: 'Solo in inglese',
   },
 
   explore: {

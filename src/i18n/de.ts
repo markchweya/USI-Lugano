@@ -189,6 +189,7 @@ const de: Messages = {
     semesters: (n) => (n === 1 ? '1 Semester' : `${n} Semester`),
     pageInItalian: 'Seite auf Italienisch',
     translated: 'Übersetzt',
+    englishOnly: 'Nur auf Englisch',
   },
 
   explore: {

@@ -65,5 +65,15 @@ export function search(entries: SearchEntry[], query: string, limit = 20): Searc
     results.push({ ...entry, score })
   }
 
-  return results.sort((a, b) => b.score - a.score || a.title.localeCompare(b.title)).slice(0, limit)
+  // usi.ch publishes some pages twice at different paths: show each title/subtitle pair once.
+  const seen = new Set<string>()
+  return results
+    .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
+    .filter((r) => {
+      const key = `${normalize(r.title)}|${normalize(r.subtitle)}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .slice(0, limit)
 }

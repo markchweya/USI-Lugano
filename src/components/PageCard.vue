@@ -20,6 +20,7 @@ const { m } = useI18n()
       <p v-if="entry.description" class="pc-desc">{{ entry.description }}</p>
       <p class="pc-foot">
         <span v-if="entry.translated" class="chip">{{ m.programme.translated }}</span>
+        <span v-else-if="entry.untranslated" class="chip">{{ m.programme.englishOnly }}</span>
         <span class="pc-go"><UiIcon name="arrow-right" :size="16" /></span>
       </p>
     </div>

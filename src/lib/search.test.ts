@@ -40,6 +40,14 @@ describe('search', () => {
     expect(search(entries, 'artint').map((r) => r.id)).toEqual(['1'])
   })
 
+  it('shows duplicate pages (same title and subtitle) once', () => {
+    const dupes: SearchEntry[] = [
+      { id: 'a', title: 'Borse Amici', subtitle: 'Borse', group: 'pages', to: '/it/a' },
+      { id: 'b', title: 'Borse Amici', subtitle: 'Borse', group: 'pages', to: '/it/b' },
+    ]
+    expect(search(dupes, 'borse')).toHaveLength(1)
+  })
+
   it('respects the limit', () => {
     expect(search(entries, 'i', 2)).toHaveLength(2)
   })

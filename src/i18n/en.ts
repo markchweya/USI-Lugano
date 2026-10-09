@@ -188,6 +188,7 @@ const en = {
     semesters: (n: number) => (n === 1 ? '1 semester' : `${n} semesters`),
     pageInItalian: 'Page in Italian',
     translated: 'Translated',
+    englishOnly: 'English only',
   },
 
   explore: {
