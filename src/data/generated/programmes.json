@@ -423,6 +423,24 @@
   "languages": []
  },
  {
+  "id": "d4d8694d3ae5",
+  "path": "/en/education/master/finance",
+  "lang": "en",
+  "level": "master",
+  "slug": "finance",
+  "title": "Finance",
+  "fullTitle": "Master in Finance",
+  "summary": "Kick-start your career with USI's Master’s in Finance and specialise in banking, quantitative finance or digital finance.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mfin-webpage-cartolina.jpg?itok=V37XPbrO",
+  "apply": "/en/education-application",
+  "ects": null,
+  "semesters": 4,
+  "languages": [
+   "EN"
+  ]
+ },
+ {
   "id": "6190a305a6be",
   "path": "/de/education/bachelor/architecture",
   "lang": "de",
