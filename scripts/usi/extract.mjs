@@ -25,7 +25,7 @@ const OUT_SRC = join(ROOT, 'src/data/generated')
 const ORIGIN = 'https://www.usi.ch'
 
 const id = (path) => createHash('sha1').update(path).digest('hex').slice(0, 12)
-const clean = (s = '') => s.replace(/ /g, ' ').replace(/\s+/g, ' ').trim()
+const clean = (s = '') => s.replace(/[\u200b-\u200d\ufeff]/g, '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()
 
 /* ------------------------------------------------------------------ */
 /* Sanitiser: keeps a small, safe subset of inline/block markup.       */
@@ -107,6 +107,18 @@ function sanitize($, el) {
 
 function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+/**
+ * usi.ch cuts many meta descriptions mid-word. End them at the last full
+ * sentence when that keeps most of the text, otherwise at a word plus "…".
+ */
+export function tidyDescription(text) {
+  if (!text || /[.!?»"”)]$/.test(text) || text.length < 120) return text
+  const lastStop = Math.max(text.lastIndexOf('. '), text.lastIndexOf('! '), text.lastIndexOf('? '))
+  if (lastStop > text.length * 0.55) return text.slice(0, lastStop + 1)
+  const lastSpace = text.lastIndexOf(' ')
+  return `${text.slice(0, lastSpace > 0 ? lastSpace : text.length).replace(/[\s,;:–-]+$/, '')}…`
 }
 
 /* ------------------------------------------------------------------ */
@@ -368,7 +380,7 @@ async function main() {
 
     const lang = path.startsWith('/it') ? 'it' : 'en'
     const title = clean($('.page_content h1').first().text()) || clean($('meta[property="og:title"]').attr('content')) || clean($('title').text()).replace(/\s*\|\s*USI.*$/, '')
-    const description = clean($('meta[name="description"]').attr('content')).replace(/[\s|·–-]+$/, '')
+    const description = tidyDescription(clean($('meta[name="description"]').attr('content')).replace(/[\s|·–-]+$/, ''))
     const alternates = {}
     $('link[rel="alternate"][hreflang]').each((_, el) => {
       const href = normalizeHref($(el).attr('href'))
@@ -419,7 +431,7 @@ async function main() {
       path,
       lang,
       title,
-      description: description.slice(0, 280),
+      description: description.length > 280 ? tidyDescription(description.slice(0, 280)) : description,
       section,
       crumbs: crumbs.slice(1, -1).map((c) => c.label),
       image: firstImage,
@@ -481,7 +493,7 @@ async function main() {
     de.words = text.split(/\s+/).filter(Boolean).length
     await writeFile(join(OUT_PUBLIC, 'pages', `${de.id}.json`), JSON.stringify(de))
     const { id: deId, path, lang, title, description, section, crumbs, image, words, translated } = de
-    index.push({ id: deId, path, lang, title, description: description.slice(0, 280), section, crumbs, image, words, translated })
+    index.push({ id: deId, path, lang, title, description: description.length > 280 ? tidyDescription(description.slice(0, 280)) : description, section, crumbs, image, words, translated })
     dePaths.add(en.path)
   }
   // German programmes mirror the English ones whose pages are translated.
