@@ -79,6 +79,10 @@ scripts/          static-route generation for GitHub Pages
 i18n/de/          German translation memory and style guide
 ```
 
+## Legacy Edition
+
+[`legacy/`](legacy/) rebuilds the same site from scratch on nine retired front-end technologies: CoffeeScript, Backbone, jQuery, Underscore, Handlebars, RequireJS, LESS, Grunt and Moment.js. It is published password-protected (AES-256-GCM, decrypted in the browser) at `/legacy/`. See [legacy/README.md](legacy/README.md).
+
 ## Note
 
 This is an independent redesign concept. All content belongs to USI and is shown with a link to its source; check usi.ch for authoritative information.
