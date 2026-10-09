@@ -7,6 +7,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { MEMORY, checkTranslation } from './segments.mjs'
+import { normalize } from './normalize.mjs'
 
 const SRC = '.cache/i18n/batches'
 const OUT = '.cache/i18n/out'
@@ -31,9 +32,12 @@ for (const f of (await readdir(OUT)).filter((f) => f.endsWith('.json')).sort()) 
       continue
     }
     if (memory[key] === undefined) added++
-    memory[key] = out[key]
+    memory[key] = normalize(out[key])
   }
 }
+
+// Re-apply terminology rules to everything, so rule changes reach older entries too.
+for (const k of Object.keys(memory)) memory[k] = normalize(memory[k])
 
 // Stable key order keeps diffs of the committed memory readable.
 const sorted = Object.fromEntries(Object.entries(memory).sort(([a], [b]) => a.localeCompare(b)))
