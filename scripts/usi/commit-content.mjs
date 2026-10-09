@@ -10,7 +10,6 @@ import { readFileSync } from 'node:fs'
 const [lang, flag] = process.argv.slice(2)
 const dry = flag === '--dry'
 const names = { en: 'English', it: 'Italian', de: 'German' }
-const trailer = 'Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01C3kUHTH3natdr5aaaHo6io'
 
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8' })
 const changed = new Set(
@@ -35,7 +34,7 @@ for (const e of index) {
 
 for (const [key, g] of groups) {
   const body = g.titles.slice(0, 12).map((t) => `- ${t}`).join('\n') + (g.titles.length > 12 ? `\n- …and ${g.titles.length - 12} more` : '')
-  const msg = `${names[lang]} content: ${g.label} (${g.files.length} ${g.files.length === 1 ? 'page' : 'pages'})\n\n${body}\n\n${trailer}`
+  const msg = `${names[lang]} content: ${g.label} (${g.files.length} ${g.files.length === 1 ? 'page' : 'pages'})\n\n${body}`
   console.log(`${key}: ${g.files.length} files`)
   if (!dry) {
     git('add', '--', ...g.files)
