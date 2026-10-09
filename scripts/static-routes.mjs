@@ -19,14 +19,25 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 const template = await readFile(join(DIST, 'index.html'), 'utf8')
 const index = JSON.parse(await readFile(join(DIST, 'content/index.json'), 'utf8'))
 
+// App pages per language, with localised slugs and titles (kept in sync with src/i18n).
+const app = {
+  en: { lang: 'en', home: 'Home', study: ['study', 'Find a programme'], explore: ['explore', 'Explore'], desc: 'Università della Svizzera italiana — a young, international university in Lugano, Switzerland.' },
+  it: { lang: 'it', home: 'Home', study: ['programmi', 'Trova un corso di studio'], explore: ['esplora', 'Esplora'], desc: 'Università della Svizzera italiana — un’università giovane e internazionale a Lugano, in Svizzera.' },
+  de: { lang: 'de', home: 'Startseite', study: ['studiengaenge', 'Studiengang finden'], explore: ['entdecken', 'Entdecken'], desc: 'Università della Svizzera italiana — eine junge, internationale Universität in Lugano, Schweiz.' },
+}
+
 const routes = [
-  { path: '/study', title: 'Find a programme', description: 'Every Bachelor and Master programme at USI, filterable by level, faculty and language.' },
-  { path: '/explore', title: 'Explore', description: 'Every public page of USI, organised and searchable.' },
-  ...index.map((e) => ({ path: e.path, title: e.title, description: e.description })),
+  ...Object.entries(app).flatMap(([l, a]) => [
+    { path: `/${l}`, title: null, description: a.desc, lang: a.lang },
+    { path: `/${l}/${a.study[0]}`, title: a.study[1], description: a.desc, lang: a.lang },
+    { path: `/${l}/${a.explore[0]}`, title: a.explore[1], description: a.desc, lang: a.lang },
+  ]),
+  ...index.map((e) => ({ path: e.path, title: e.title, description: e.description, lang: e.lang })),
 ]
 
-function render({ path, title, description }) {
-  let html = template.replace(/<title>[^<]*<\/title>/, `<title>${esc(`${title} · ${SUFFIX}`)}</title>`)
+function render({ path, title, description, lang }) {
+  let html = template.replace(/<title>[^<]*<\/title>/, `<title>${esc(title ? `${title} · ${SUFFIX}` : SUFFIX)}</title>`)
+  html = html.replace('<html lang="en">', `<html lang="${lang}">`)
   if (description) html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(description)}$2`)
   if (SITE) html = html.replace('</head>', `    <link rel="canonical" href="${esc(SITE + encodeURI(path))}" />\n  </head>`)
   return html
