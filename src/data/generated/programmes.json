@@ -219,8 +219,10 @@
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mdfc-webpage-1.jpg?itok=Cu7Bz56G",
   "apply": "/en/education-application",
   "ects": null,
-  "semesters": null,
-  "languages": []
+  "semesters": 2,
+  "languages": [
+   "EN"
+  ]
  },
  {
   "id": "2cf85cce621d",
@@ -236,7 +238,9 @@
   "apply": "/en/education-application",
   "ects": 120,
   "semesters": 4,
-  "languages": []
+  "languages": [
+   "EN"
+  ]
  },
  {
   "id": "3c181df0c8e9",
@@ -250,8 +254,8 @@
   "faculty": "economics",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-usi_funk.03.jpg?itok=d8WGEz20",
   "apply": "/en/education-application",
-  "ects": null,
-  "semesters": null,
+  "ects": 90,
+  "semesters": 3,
   "languages": [
    "EN"
   ]
@@ -268,8 +272,8 @@
   "faculty": "informatics",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-6.jpg?itok=VBdrbUzT",
   "apply": "/en/education-application",
-  "ects": null,
-  "semesters": null,
+  "ects": 120,
+  "semesters": 4,
   "languages": []
  },
  {
@@ -439,6 +443,38 @@
   "languages": [
    "EN"
   ]
+ },
+ {
+  "id": "20f36eeee26a",
+  "path": "/en/education/master/data-science",
+  "lang": "en",
+  "level": "master",
+  "slug": "data-science",
+  "title": "Data Science",
+  "fullTitle": "Master in Data Science",
+  "summary": "Study numerical simulation, data engineering and mathematical modeling. Enrol to this unique programme in Switzerland. Obtain a Double Degree USI + FAU.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-immagine_mcs_eurohpc.jpg?itok=TIZEPAcs",
+  "apply": null,
+  "ects": 120,
+  "semesters": 4,
+  "languages": []
+ },
+ {
+  "id": "c4087d0139cf",
+  "path": "/en/education/master/software-engineering-with-ai",
+  "lang": "en",
+  "level": "master",
+  "slug": "software-engineering-with-ai",
+  "title": "Software Engineering with AI",
+  "fullTitle": "Master in Software Engineering with AI",
+  "summary": "Get yourself the best chance to become a software engineer with the best course available. Enroll today to USI's Master in Software Engineering with AI.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-img-0937.jpg?itok=yJ6dKuoa",
+  "apply": null,
+  "ects": null,
+  "semesters": 2,
+  "languages": []
  },
  {
   "id": "6190a305a6be",
@@ -672,8 +708,10 @@
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-mdfc-webpage-1.jpg?itok=Cu7Bz56G",
   "apply": "/en/education-application",
   "ects": null,
-  "semesters": null,
-  "languages": [],
+  "semesters": 2,
+  "languages": [
+   "EN"
+  ],
   "translated": true
  },
  {
@@ -690,7 +728,9 @@
   "apply": "/en/education-application",
   "ects": 120,
   "semesters": 4,
-  "languages": [],
+  "languages": [
+   "EN"
+  ],
   "translated": true
  },
  {
@@ -705,8 +745,8 @@
   "faculty": "economics",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-usi_funk.03.jpg?itok=d8WGEz20",
   "apply": "/en/education-application",
-  "ects": null,
-  "semesters": null,
+  "ects": 90,
+  "semesters": 3,
   "languages": [
    "EN"
   ],
@@ -724,8 +764,42 @@
   "faculty": "informatics",
   "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-inf-6.jpg?itok=VBdrbUzT",
   "apply": "/en/education-application",
+  "ects": 120,
+  "semesters": 4,
+  "languages": [],
+  "translated": true
+ },
+ {
+  "id": "48c21630cc88",
+  "path": "/de/education/master/data-science",
+  "lang": "de",
+  "level": "master",
+  "slug": "data-science",
+  "title": "Data Science",
+  "fullTitle": "Master in Data Science",
+  "summary": "Studieren Sie numerische Simulation, Data Engineering und mathematische Modellierung in einem in der Schweiz einzigartigen Studiengang. Erwerben Sie einen Doppelabschluss USI + FAU.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-immagine_mcs_eurohpc.jpg?itok=TIZEPAcs",
+  "apply": null,
+  "ects": 120,
+  "semesters": 4,
+  "languages": [],
+  "translated": true
+ },
+ {
+  "id": "553cc69bcad0",
+  "path": "/de/education/master/software-engineering-with-ai",
+  "lang": "de",
+  "level": "master",
+  "slug": "software-engineering-with-ai",
+  "title": "Software Engineering with AI",
+  "fullTitle": "Master in Software Engineering with AI",
+  "summary": "Verschaffen Sie sich die besten Voraussetzungen für eine Karriere im Software Engineering. Schreiben Sie sich jetzt für den Master in Software Engineering with AI der USI ein.",
+  "faculty": "informatics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-img-0937.jpg?itok=yJ6dKuoa",
+  "apply": null,
   "ects": null,
-  "semesters": null,
+  "semesters": 2,
   "languages": [],
   "translated": true
  }
