@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>USI — Legacy Edition</title>
+<meta name="description" content="The USI website, rebuilt on a retired 2012 front-end stack. Private preview.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e1620'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' text-anchor='middle' fill='%23f5f2ec'%3EUSI%3C/text%3E%3C/svg%3E">
+<script>
+  // Apply the stored theme before first paint (no flash of the wrong theme).
+  (function () {
+    try {
+      var t = localStorage.getItem('usi-legacy-theme');
+      var dark = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    } catch (e) {}
+  })();
+</script>
+<style>:root{color-scheme:light;--paper:#f5f2ec;--paper-2:#ece7de;--surface:#fffdf9;--surface-raised:#ffffff;--ink:#0e1620;--ink-2:#3a4552;--ink-3:#5f6873;--line:rgba(14,22,32,0.11);--line-strong:rgba(14,22,32,0.22);--lake:#1c5a73;--lake-soft:rgba(28,90,115,0.1);--signal:#c2401b;--signal-ink:#ffffff;--signal-soft:rgba(194,64,27,0.12);--fac-architecture:#b8532c;--fac-biomedical-sciences:#c03a5c;--fac-communication:#6a4fd6;--fac-economics:#0f8a5f;--fac-informatics:#2357e0;--fac-theology:#a87a12;--font-display:'Fraunces Variable', 'Iowan Old Style', Georgia, serif;--font-sans:'Inter Tight Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;--step--1:clamp(.8rem, .78rem + .1vw, .875rem);--step-0:clamp(1rem, .96rem + .2vw, 1.0625rem);--step-1:clamp(1.15rem, 1.08rem + .35vw, 1.35rem);--step-2:clamp(1.4rem, 1.25rem + .7vw, 1.85rem);--step-3:clamp(1.8rem, 1.5rem + 1.4vw, 2.75rem);--step-4:clamp(2.3rem, 1.8rem + 2.6vw, 4.25rem);--step-5:clamp(2.6rem, 1.9rem + 4.2vw, 6.25rem);--gutter:clamp(1rem, .6rem + 2vw, 2.5rem);--section:clamp(4rem, 3rem + 5vw, 8rem);--max:1320px;--radius-sm:10px;--radius:18px;--radius-lg:28px;--header-h:68px;--shadow-sm:0 1px 2px rgba(14,22,32,0.06), 0 1px 1px rgb(14 22 32 / .04);--shadow:0 10px 30px -12px rgba(14,22,32,0.18), 0 2px 6px rgb(14 22 32 / .05);--shadow-lg:0 30px 80px -24px rgba(14,22,32,0.35);--ease-out:cubic-bezier(.22, 1, .36, 1);--dur:280ms}:root[data-theme='dark']{color-scheme:dark;--paper:#0a0f15;--paper-2:#10171f;--surface:#121a23;--surface-raised:#17212c;--ink:#ede8df;--ink-2:#b9c0c8;--ink-3:#87909a;--line:rgba(237,232,223,0.1);--line-strong:rgba(237,232,223,0.2);--lake:#6bbad6;--lake-soft:rgba(107,186,214,0.12);--signal:#ff6a45;--signal-ink:#160904;--signal-soft:rgba(255,106,69,0.14);--fac-architecture:#e98a5f;--fac-biomedical-sciences:#f07493;--fac-communication:#a593ff;--fac-economics:#3fcf97;--fac-informatics:#6f9bff;--fac-theology:#e2b54a;--shadow-sm:0 1px 2px rgba(0,0,0,0.4);--shadow:0 12px 32px -12px rgba(0,0,0,0.6), 0 2px 6px rgb(0 0 0 / .3);--shadow-lg:0 30px 80px -20px rgba(0,0,0,0.75)}*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%}body{min-height:100vh;min-height:100dvh;background:var(--paper);color:var(--ink);font:400 1rem/1.55 ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}.gate{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;padding:2rem 1rem;background:radial-gradient(60rem 40rem at 85% -10%, var(--lake-soft), transparent 60%),radial-gradient(50rem 30rem at -10% 110%, var(--signal-soft), transparent 60%),var(--paper);opacity:0;transition:opacity .3s ease}.gate-ready .gate{opacity:1}.gate__card{width:100%;max-width:27rem;padding:2.25rem 2rem 1.75rem;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-lg)}.is-wrong .gate__card{animation:gate-shake .4s ease}.gate__mark{display:inline-grid;place-items:center;width:3rem;height:3rem;margin:0 0 1.5rem;border-radius:12px;background:var(--ink);color:var(--paper);font:600 1rem/1 Georgia,'Times New Roman',serif;letter-spacing:.02em}.gate__eyebrow{margin:0 0 .35rem;color:var(--ink-3);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}.gate__title{margin:0 0 .75rem;font:400 2.4rem/1.05 Georgia,'Iowan Old Style',serif;letter-spacing:-0.02em}.gate__lede{margin:0 0 1.75rem;color:var(--ink-2)}.gate__label{display:block;margin-bottom:.4rem;font-weight:600;font-size:.9rem}.gate__field{display:flex;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--paper);transition:border-color .2s,box-shadow .2s}.gate__field:focus-within{border-color:var(--lake);box-shadow:0 0 0 3px var(--lake-soft)}.is-wrong .gate__field{border-color:var(--signal)}.gate__field input{flex:1;min-width:0;padding:.8rem .9rem;border:0;background:transparent;color:inherit;font:inherit;font-size:1.05rem;outline:none}.gate__reveal{padding:0 .9rem;border:0;border-left:1px solid var(--line);background:transparent;color:var(--ink-2);font:inherit;font-size:.85rem;cursor:pointer}.gate__reveal:hover{color:var(--ink)}.gate__reveal:focus-visible{outline:2px solid var(--lake);outline-offset:-4px;border-radius:8px}.gate__submit{width:100%;margin-top:1rem;padding:.85rem 1rem;border:0;border-radius:999px;background:var(--signal);color:var(--signal-ink);font:inherit;font-weight:600;cursor:pointer;transition:transform .15s ease,filter .15s}.gate__submit:hover{filter:brightness(1.06)}.gate__submit:active{transform:scale(.985)}.gate__submit:focus-visible{outline:3px solid var(--lake);outline-offset:3px}.gate__submit[disabled]{cursor:progress;opacity:.7}.gate__status{min-height:1.5em;margin:.75rem 0 0;color:var(--ink-2);font-size:.9rem}.gate__status.is-error{color:var(--signal)}.gate__stack{display:flex;flex-wrap:wrap;gap:.35rem;margin:1.5rem 0 0;padding:1.25rem 0 0;border-top:1px solid var(--line);list-style:none}.gate__stack li{padding:.2rem .6rem;border:1px solid var(--line);border-radius:999px;color:var(--ink-3);font-size:.75rem}.gate__note{max-width:27rem;margin:0;color:var(--ink-3);font-size:.8rem;text-align:center}@keyframes gate-shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}@media (prefers-reduced-motion:reduce){.gate,.gate__card{transition:none;animation:none !important}}</style>
+</head>
+<body>
+<main id="gate" class="gate" aria-labelledby="gate-title">
+  <div class="gate__card">
+    <p class="gate__mark" aria-hidden="true">USI</p>
+    <p class="gate__eyebrow" data-i18n="eyebrow">Università della Svizzera italiana</p>
+    <h1 id="gate-title" class="gate__title"><span data-i18n="title">Legacy Edition</span></h1>
+    <p class="gate__lede" data-i18n="lede">A private preview of the USI website, rebuilt from scratch on a front-end stack the industry retired.</p>
+    <form class="gate__form" novalidate>
+      <label class="gate__label" for="gate-password" data-i18n="label">Password</label>
+      <div class="gate__field">
+        <input id="gate-password" name="password" type="password" autocomplete="current-password" required spellcheck="false" autocapitalize="off" aria-describedby="gate-status">
+        <button type="button" class="gate__reveal" aria-pressed="false" data-i18n="show">Show</button>
+      </div>
+      <button type="submit" class="gate__submit"><span data-i18n="unlock">Unlock</span></button>
+      <p id="gate-status" class="gate__status" role="status" aria-live="polite"></p>
+    </form>
+    <ul class="gate__stack" aria-label="Stack">
+      <li>CoffeeScript</li><li>Backbone</li><li>jQuery</li><li>Underscore</li><li>Handlebars</li><li>RequireJS</li><li>LESS</li><li>Grunt</li><li>Moment.js</li>
+    </ul>
+  </div>
+  <p class="gate__note" data-i18n="note">Encrypted with AES-256-GCM. Your password never leaves this browser.</p>
+</main>
+<script>(function() {
+  var $, COPY, SESSION_KEY, boot, decrypt, deriveKey, el, form, fromB64, gate, gunzip, input, j, lang, len, loadVault, pickLang, ref, ref1, remember, resume, reveal, say, showForm, status, submit, subtle, t, toB64, vault;
+
+  COPY = {
+    en: {
+      eyebrow: 'Università della Svizzera italiana',
+      title: 'Legacy Edition',
+      lede: 'A private preview of the USI website, rebuilt from scratch on a front-end stack the industry retired.',
+      label: 'Password',
+      show: 'Show',
+      hide: 'Hide',
+      unlock: 'Unlock',
+      unlocking: 'Unlocking…',
+      wrong: 'That password isn’t right. Try again.',
+      empty: 'Enter the password to continue.',
+      offline: 'The encrypted site couldn’t be loaded. Check your connection and refresh.',
+      insecure: 'This browser can’t decrypt the site here. Open it over HTTPS in a current browser.',
+      note: 'Encrypted with AES-256-GCM. Your password never leaves this browser.'
+    },
+    it: {
+      eyebrow: 'Università della Svizzera italiana',
+      title: 'Legacy Edition',
+      lede: 'Un’anteprima privata del sito dell’USI, ricostruito da zero con uno stack front-end che il settore ha ormai abbandonato.',
+      label: 'Password',
+      show: 'Mostra',
+      hide: 'Nascondi',
+      unlock: 'Sblocca',
+      unlocking: 'Sblocco in corso…',
+      wrong: 'La password non è corretta. Riprova.',
+      empty: 'Inserisci la password per continuare.',
+      offline: 'Impossibile caricare il sito cifrato. Controlla la connessione e ricarica la pagina.',
+      insecure: 'Questo browser non può decifrare il sito qui. Aprilo via HTTPS con un browser aggiornato.',
+      note: 'Cifrato con AES-256-GCM. La password non lascia mai questo browser.'
+    },
+    de: {
+      eyebrow: 'Università della Svizzera italiana',
+      title: 'Legacy Edition',
+      lede: 'Eine private Vorschau der USI-Website, von Grund auf neu gebaut mit einem Frontend-Stack, den die Branche längst ausgemustert hat.',
+      label: 'Passwort',
+      show: 'Anzeigen',
+      hide: 'Verbergen',
+      unlock: 'Entsperren',
+      unlocking: 'Wird entsperrt…',
+      wrong: 'Das Passwort ist nicht korrekt. Bitte erneut versuchen.',
+      empty: 'Bitte geben Sie das Passwort ein.',
+      offline: 'Die verschlüsselte Website konnte nicht geladen werden. Prüfen Sie die Verbindung und laden Sie neu.',
+      insecure: 'Dieser Browser kann die Website hier nicht entschlüsseln. Öffnen Sie sie über HTTPS in einem aktuellen Browser.',
+      note: 'Verschlüsselt mit AES-256-GCM. Ihr Passwort verlässt diesen Browser nie.'
+    }
+  };
+
+  SESSION_KEY = 'usi-legacy-key';
+
+  pickLang = function() {
+    var fromHash, j, l, len, ref, ref1, short, stored;
+    fromHash = (ref = /^#\/(en|it|de)(\/|$)/.exec(location.hash)) != null ? ref[1] : void 0;
+    if (fromHash) {
+      return fromHash;
+    }
+    try {
+      stored = localStorage.getItem('usi-legacy-lang');
+      if (COPY[stored]) {
+        return stored;
+      }
+    } catch (error) {}
+    ref1 = navigator.languages || [navigator.language || 'en'];
+    for (j = 0, len = ref1.length; j < len; j++) {
+      l = ref1[j];
+      short = String(l).slice(0, 2).toLowerCase();
+      if (COPY[short]) {
+        return short;
+      }
+    }
+    return 'en';
+  };
+
+  lang = pickLang();
+
+  t = COPY[lang];
+
+  document.documentElement.lang = lang;
+
+  $ = function(sel) {
+    return document.querySelector(sel);
+  };
+
+  gate = $('#gate');
+
+  form = $('.gate__form');
+
+  input = $('#gate-password');
+
+  reveal = $('.gate__reveal');
+
+  submit = $('.gate__submit');
+
+  status = $('#gate-status');
+
+  ref = document.querySelectorAll('[data-i18n]');
+  for (j = 0, len = ref.length; j < len; j++) {
+    el = ref[j];
+    el.textContent = t[el.getAttribute('data-i18n')];
+  }
+
+  fromB64 = function(s) {
+    var bin, bytes, i, m, ref1;
+    bin = atob(s);
+    bytes = new Uint8Array(bin.length);
+    for (i = m = 0, ref1 = bin.length; 0 <= ref1 ? m < ref1 : m > ref1; i = 0 <= ref1 ? ++m : --m) {
+      bytes[i] = bin.charCodeAt(i);
+    }
+    return bytes;
+  };
+
+  toB64 = function(buf) {
+    var b, bytes, len1, m, s;
+    bytes = new Uint8Array(buf);
+    s = '';
+    for (m = 0, len1 = bytes.length; m < len1; m++) {
+      b = bytes[m];
+      s += String.fromCharCode(b);
+    }
+    return btoa(s);
+  };
+
+  say = function(msg, kind) {
+    status.textContent = msg;
+    return status.className = 'gate__status' + (kind ? " is-" + kind : '');
+  };
+
+  subtle = (ref1 = window.crypto) != null ? ref1.subtle : void 0;
+
+  vault = null;
+
+  loadVault = function() {
+    var get;
+    get = function(file, as) {
+      return fetch(file, {
+        cache: 'no-cache'
+      }).then(function(r) {
+        if (!r.ok) {
+          throw new Error(file);
+        }
+        return r[as]();
+      });
+    };
+    return get('vault.json', 'json').then(function(meta) {
+      return get(meta.data, 'arrayBuffer').then(function(buf) {
+        meta.bytes = new Uint8Array(buf);
+        return meta;
+      });
+    });
+  };
+
+  deriveKey = function(password) {
+    var enc;
+    enc = new TextEncoder();
+    return subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']).then(function(base) {
+      return subtle.deriveKey({
+        name: 'PBKDF2',
+        hash: vault.kdf.hash,
+        salt: fromB64(vault.kdf.salt),
+        iterations: vault.kdf.iterations
+      }, base, {
+        name: 'AES-GCM',
+        length: 256
+      }, true, ['decrypt']);
+    });
+  };
+
+  gunzip = function(bytes) {
+    var stream;
+    stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Response(stream).text();
+  };
+
+  decrypt = function(key) {
+    return subtle.decrypt({
+      name: 'AES-GCM',
+      iv: fromB64(vault.cipher.iv)
+    }, key, vault.bytes).then(function(plain) {
+      return gunzip(plain);
+    }).then(function(text) {
+      return JSON.parse(text);
+    });
+  };
+
+  boot = function(payload) {
+    var app, script, style;
+    window.USI_LEGACY = {
+      sealed: true,
+      lang: lang
+    };
+    style = document.createElement('style');
+    style.textContent = payload.css;
+    document.head.appendChild(style);
+    app = document.createElement('div');
+    app.id = 'app';
+    gate.parentNode.replaceChild(app, gate);
+    script = document.createElement('script');
+    script.textContent = payload.js;
+    return document.body.appendChild(script);
+  };
+
+  resume = function() {
+    var saved;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    } catch (error) {}
+    if (!(saved && saved.salt === vault.kdf.salt)) {
+      return Promise.reject();
+    }
+    return subtle.importKey('raw', fromB64(saved.key), 'AES-GCM', false, ['decrypt']).then(decrypt);
+  };
+
+  remember = function(key) {
+    return subtle.exportKey('raw', key).then(function(raw) {
+      try {
+        return sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          salt: vault.kdf.salt,
+          key: toB64(raw)
+        }));
+      } catch (error) {}
+    });
+  };
+
+  showForm = function() {
+    document.documentElement.className += ' gate-ready';
+    return input.focus();
+  };
+
+  if (!(subtle && window.TextEncoder && window.fetch && window.DecompressionStream)) {
+    say(t.insecure, 'error');
+    submit.disabled = true;
+    document.documentElement.className += ' gate-ready';
+  } else {
+    loadVault().then(function(v) {
+      vault = v;
+      return resume().then(boot, showForm);
+    })["catch"](function() {
+      say(t.offline, 'error');
+      return showForm();
+    });
+  }
+
+  reveal.addEventListener('click', function() {
+    var shown;
+    shown = input.type === 'text';
+    input.type = shown ? 'password' : 'text';
+    reveal.textContent = shown ? t.show : t.hide;
+    reveal.setAttribute('aria-pressed', String(!shown));
+    return input.focus();
+  });
+
+  form.addEventListener('submit', function(e) {
+    var key, ready;
+    e.preventDefault();
+    if (submit.disabled) {
+      return;
+    }
+    if (!input.value) {
+      say(t.empty, 'error');
+      return input.focus();
+    }
+    submit.disabled = true;
+    gate.className = 'gate is-busy';
+    say(t.unlocking);
+    ready = vault ? Promise.resolve(vault) : loadVault().then(function(v) {
+      return vault = v;
+    });
+    key = null;
+    return ready.then(function() {
+      return deriveKey(input.value);
+    }).then(function(k) {
+      key = k;
+      return decrypt(k);
+    }).then(function(payload) {
+      var start;
+      start = function() {
+        return boot(payload);
+      };
+      return remember(key).then(start, start);
+    })["catch"](function(err) {
+      submit.disabled = false;
+      gate.className = 'gate is-wrong';
+      say((vault ? t.wrong : t.offline), 'error');
+      input.select();
+      return setTimeout((function() {
+        return gate.className = 'gate';
+      }), 450);
+    });
+  });
+
+}).call(this);
+</script>
+</body>
+</html>
