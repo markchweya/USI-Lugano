@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import UiIcon from '../ui/UiIcon.vue'
+import { useI18n } from '@/i18n'
 
 /**
  * Click-to-load facade: no third-party requests or cookies until the visitor
@@ -8,6 +9,7 @@ import UiIcon from '../ui/UiIcon.vue'
  */
 const props = defineProps<{ id: string; title?: string }>()
 const playing = ref(false)
+const { m } = useI18n()
 const thumb = `https://i.ytimg.com/vi/${props.id}/hqdefault.jpg`
 </script>
 
@@ -16,14 +18,14 @@ const thumb = `https://i.ytimg.com/vi/${props.id}/hqdefault.jpg`
     <iframe
       v-if="playing"
       :src="`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`"
-      :title="title || 'Video'"
+      :title="title || m.page.playVideo"
       allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
       allowfullscreen
     />
     <button v-else type="button" class="poster" @click="playing = true">
       <img :src="thumb" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
       <span class="play"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" /></svg></span>
-      <span class="label"><UiIcon name="arrow-right" :size="14" /> Play video{{ title ? `: ${title}` : '' }}</span>
+      <span class="label"><UiIcon name="arrow-right" :size="14" /> {{ m.page.playVideo }}{{ title ? `: ${title}` : '' }}</span>
     </button>
   </div>
 </template>

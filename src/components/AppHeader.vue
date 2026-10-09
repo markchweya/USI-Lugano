@@ -4,13 +4,17 @@ import { useRoute } from 'vue-router'
 import { useSiteNav } from '@/content/nav'
 import { useCommandPalette } from '@/composables/useCommandPalette'
 import { useScrollLock } from '@/composables/useScrollLock'
-import { programmes } from '@/data/programmes'
+import { useProgrammes } from '@/data/programmes'
+import { appPageOf, useI18n } from '@/i18n'
 import ThemeToggle from './ui/ThemeToggle.vue'
+import LanguageSwitcher from './ui/LanguageSwitcher.vue'
 import UiIcon from './ui/UiIcon.vue'
 import BrandMark from './ui/BrandMark.vue'
 
 const route = useRoute()
+const { m, path } = useI18n()
 const { sections, children } = useSiteNav()
+const programmes = useProgrammes()
 const palette = useCommandPalette()
 
 const openKey = ref<string | null>(null)
@@ -68,22 +72,24 @@ watch(
   },
 )
 
-const activeSection = computed(() => sections.find((s) => route.path.startsWith(s.root))?.key ?? (route.path.startsWith('/study') ? 'education' : null))
-const openSection = computed(() => sections.find((s) => s.key === openKey.value))
+const activeSection = computed(
+  () => sections.value.find((s) => route.path.startsWith(s.root))?.key ?? (appPageOf(route.path) === 'study' ? 'education' : null),
+)
+const openSection = computed(() => sections.value.find((s) => s.key === openKey.value))
 const levelCounts = computed(() => ({
-  bachelor: programmes.filter((p) => p.level === 'bachelor').length,
-  master: programmes.filter((p) => p.level === 'master').length,
+  bachelor: programmes.value.filter((p) => p.level === 'bachelor').length,
+  master: programmes.value.filter((p) => p.level === 'master').length,
 }))
 </script>
 
 <template>
   <header class="header" :class="{ scrolled, hidden, menu: !!openKey }" @mouseleave="hoverClose">
     <div class="bar container">
-      <RouterLink to="/" class="brand" aria-label="USI — Università della Svizzera italiana, home">
+      <RouterLink :to="path('home')" class="brand" :aria-label="m.nav.home">
         <BrandMark />
       </RouterLink>
 
-      <nav class="nav" aria-label="Main">
+      <nav class="nav" :aria-label="m.nav.main">
         <ul role="list">
           <li v-for="s in sections" :key="s.key" @mouseenter="hoverOpen(s.key)">
             <button
@@ -99,7 +105,7 @@ const levelCounts = computed(() => ({
             </button>
           </li>
           <li @mouseenter="hoverClose">
-            <RouterLink to="/explore" class="nav-btn" active-class="active">Explore</RouterLink>
+            <RouterLink :to="path('explore')" class="nav-btn" active-class="active">{{ m.nav.explore }}</RouterLink>
           </li>
         </ul>
       </nav>
@@ -107,14 +113,15 @@ const levelCounts = computed(() => ({
       <div class="actions">
         <button type="button" class="search-btn" @click="palette.open()">
           <UiIcon name="search" :size="16" />
-          <span class="search-label">Search</span>
+          <span class="search-label">{{ m.nav.search }}</span>
           <kbd class="kbd">{{ isMac ? '⌘' : 'Ctrl' }} K</kbd>
         </button>
+        <LanguageSwitcher />
         <ThemeToggle />
-        <RouterLink to="/study" class="btn btn--signal btn--sm cta">Programmes</RouterLink>
+        <RouterLink :to="path('study')" class="btn btn--signal btn--sm cta">{{ m.nav.programmes }}</RouterLink>
         <button type="button" class="burger" :aria-expanded="drawerOpen" aria-controls="drawer" @click="drawerOpen = !drawerOpen">
           <UiIcon :name="drawerOpen ? 'close' : 'menu'" :size="22" />
-          <span class="visually-hidden">Menu</span>
+          <span class="visually-hidden">{{ m.nav.menu }}</span>
         </button>
       </div>
     </div>
@@ -127,14 +134,14 @@ const levelCounts = computed(() => ({
             <p class="eyebrow">{{ openSection.label }}</p>
             <p class="mega-title">{{ openSection.blurb }}</p>
             <template v-if="openSection.key === 'education'">
-              <RouterLink to="/study" class="finder-card">
-                <span class="finder-k">Programme finder</span>
-                <span class="finder-v">{{ levelCounts.bachelor }} Bachelor · {{ levelCounts.master }} Master</span>
-                <span class="finder-go">Find yours <UiIcon name="arrow-right" :size="16" /></span>
+              <RouterLink :to="path('study')" class="finder-card">
+                <span class="finder-k">{{ m.nav.finderLabel }}</span>
+                <span class="finder-v">{{ m.nav.finderCounts(levelCounts.bachelor, levelCounts.master) }}</span>
+                <span class="finder-go">{{ m.nav.findYours }} <UiIcon name="arrow-right" :size="16" /></span>
               </RouterLink>
             </template>
-            <RouterLink v-else :to="`/explore?section=${openSection.key}`" class="mega-all">
-              Everything in {{ openSection.label }} <UiIcon name="arrow-right" :size="16" />
+            <RouterLink v-else :to="{ path: path('explore'), query: { section: openSection.key } }" class="mega-all">
+              {{ m.nav.everythingIn(openSection.label) }} <UiIcon name="arrow-right" :size="16" />
             </RouterLink>
           </div>
           <ul class="mega-links" role="list">
@@ -144,7 +151,7 @@ const levelCounts = computed(() => ({
                 <span v-if="c.description" class="mega-link-desc">{{ c.description }}</span>
               </RouterLink>
             </li>
-            <li v-if="!children[openSection.key]?.length" class="mega-empty">Loading…</li>
+            <li v-if="!children[openSection.key]?.length" class="mega-empty">{{ m.nav.loading }}</li>
           </ul>
         </div>
       </div>
@@ -154,13 +161,14 @@ const levelCounts = computed(() => ({
 
   <!-- Mobile drawer -->
   <Transition name="drawer">
-    <div v-if="drawerOpen" id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div v-if="drawerOpen" id="drawer" class="drawer" role="dialog" aria-modal="true" :aria-label="m.nav.menu">
       <div class="drawer-inner">
         <button type="button" class="drawer-search" @click="palette.open()">
-          <UiIcon name="search" :size="18" /> Search programmes and pages
+          <UiIcon name="search" :size="18" /> {{ m.nav.searchMobile }}
         </button>
-        <RouterLink to="/study" class="drawer-top">Find a programme <UiIcon name="arrow-right" /></RouterLink>
-        <RouterLink to="/explore" class="drawer-top">Explore everything <UiIcon name="arrow-right" /></RouterLink>
+        <LanguageSwitcher variant="inline" class="drawer-langs" />
+        <RouterLink :to="path('study')" class="drawer-top">{{ m.nav.findProgramme }} <UiIcon name="arrow-right" /></RouterLink>
+        <RouterLink :to="path('explore')" class="drawer-top">{{ m.nav.exploreEverything }} <UiIcon name="arrow-right" /></RouterLink>
         <details v-for="s in sections" :key="s.key" class="drawer-group">
           <summary>{{ s.label }} <UiIcon name="chevron-down" :size="18" /></summary>
           <ul role="list">
@@ -461,6 +469,9 @@ const levelCounts = computed(() => ({
   background: var(--surface);
   color: var(--ink-3);
   text-align: left;
+}
+.drawer-langs {
+  margin-bottom: 0.5rem;
 }
 .drawer-top,
 .drawer-group summary {

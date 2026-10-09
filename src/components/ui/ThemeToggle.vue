@@ -1,28 +1,30 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTheme } from '@/composables/useTheme'
+import { useI18n } from '@/i18n'
 import UiIcon from './UiIcon.vue'
 
 const { preference, cycle } = useTheme()
+const { m } = useI18n()
 
 const meta = computed(() => {
   switch (preference.value) {
     case 'light':
-      return { icon: 'sun', label: 'Light theme' } as const
+      return { icon: 'sun', label: m.value.theme.light } as const
     case 'dark':
-      return { icon: 'moon', label: 'Dark theme' } as const
+      return { icon: 'moon', label: m.value.theme.dark } as const
     default:
-      return { icon: 'monitor', label: 'System theme' } as const
+      return { icon: 'monitor', label: m.value.theme.system } as const
   }
 })
 </script>
 
 <template>
-  <button type="button" class="theme-toggle" :title="`${meta.label} — click to change`" @click="cycle">
+  <button type="button" class="theme-toggle" :title="`${meta.label} — ${m.theme.clickToChange}`" @click="cycle">
     <Transition name="spin" mode="out-in">
       <UiIcon :key="meta.icon" :name="meta.icon" :size="18" />
     </Transition>
-    <span class="visually-hidden">{{ meta.label }}. Change theme</span>
+    <span class="visually-hidden">{{ meta.label }}. {{ m.theme.change }}</span>
   </button>
 </template>
 

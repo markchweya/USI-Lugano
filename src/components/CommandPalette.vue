@@ -5,6 +5,7 @@ import { useCommandPalette } from '@/composables/useCommandPalette'
 import { useScrollLock } from '@/composables/useScrollLock'
 import { search, type SearchEntry } from '@/lib/search'
 import { buildSearchIndex, instantEntries } from '@/lib/searchIndex'
+import { useI18n } from '@/i18n'
 import UiIcon from './ui/UiIcon.vue'
 
 const { isOpen, open, close } = useCommandPalette()
@@ -15,13 +16,18 @@ const query = ref('')
 const active = ref(0)
 const input = ref<HTMLInputElement>()
 const list = ref<HTMLElement>()
-const corpus = shallowRef<SearchEntry[]>(instantEntries)
+const { locale, m, n } = useI18n()
+const instant = computed(() => instantEntries(locale.value))
+const corpus = shallowRef<SearchEntry[]>(instant.value)
+const fullFor = ref<string | null>(null)
 const loadingCorpus = ref(false)
 
 const suggestions = computed(() => [
-  ...instantEntries.filter((e) => e.group === 'Go to'),
-  ...instantEntries.filter((e) => e.group === 'Programmes').slice(0, 6),
+  ...instant.value.filter((e) => e.group === 'goto'),
+  ...instant.value.filter((e) => e.group === 'programmes').slice(0, 6),
 ])
+
+const groupLabel = (g: string) => m.value.palette.groups[g as keyof typeof m.value.palette.groups] ?? g
 
 const results = computed(() => (query.value.trim() ? search(corpus.value, query.value, 40) : suggestions.value))
 
@@ -42,9 +48,15 @@ watch(isOpen, async (o) => {
   query.value = ''
   await nextTick()
   input.value?.focus()
-  if (corpus.value === instantEntries) {
+  if (fullFor.value !== locale.value) {
+    const l = locale.value
+    corpus.value = instant.value
     loadingCorpus.value = true
-    corpus.value = await buildSearchIndex()
+    const full = await buildSearchIndex(l)
+    if (l === locale.value) {
+      corpus.value = full
+      fullFor.value = l
+    }
     loadingCorpus.value = false
   }
 })
@@ -91,7 +103,7 @@ function onGlobalKey(e: KeyboardEvent) {
 onMounted(() => window.addEventListener('keydown', onGlobalKey))
 onBeforeUnmount(() => window.removeEventListener('keydown', onGlobalKey))
 
-const pagesCount = computed(() => corpus.value.filter((e) => e.group === 'Pages' || e.group === 'Programmes').length)
+const pagesCount = computed(() => corpus.value.filter((e) => e.group === 'pages' || e.group === 'programmes').length)
 
 function highlight(text: string): string {
   const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -109,7 +121,7 @@ function highlight(text: string): string {
   <Teleport to="body">
     <Transition name="palette">
       <div v-if="isOpen" class="overlay" @mousedown.self="close">
-        <div class="palette" role="dialog" aria-modal="true" aria-label="Search USI">
+        <div class="palette" role="dialog" aria-modal="true" :aria-label="m.palette.dialog">
           <div class="field">
             <UiIcon name="search" :size="20" />
             <input
@@ -121,18 +133,18 @@ function highlight(text: string): string {
               aria-controls="palette-results"
               aria-autocomplete="list"
               :aria-activedescendant="results.length ? `pr-${active}` : undefined"
-              placeholder="Search programmes, pages, services…"
+              :placeholder="m.palette.placeholder"
               autocomplete="off"
               spellcheck="false"
               @keydown="onKeydown"
             />
-            <button type="button" class="esc" @click="close">Esc</button>
+            <button type="button" class="esc" @click="close">{{ m.palette.esc }}</button>
           </div>
 
-          <div id="palette-results" ref="list" class="results" role="listbox" aria-label="Results">
+          <div id="palette-results" ref="list" class="results" role="listbox" :aria-label="m.palette.results">
             <template v-if="results.length">
-              <div v-for="g in grouped" :key="g.name" role="group" :aria-label="g.name">
-                <p class="group">{{ query.trim() ? g.name : g.name === 'Go to' ? 'Jump to' : 'Popular programmes' }}</p>
+              <div v-for="g in grouped" :key="g.name" role="group" :aria-label="groupLabel(g.name)">
+                <p class="group">{{ query.trim() ? groupLabel(g.name) : g.name === 'goto' ? m.palette.jumpTo : m.palette.popular }}</p>
                 <div
                   v-for="{ entry, index } in g.items"
                   :id="`pr-${index}`"
@@ -146,7 +158,7 @@ function highlight(text: string): string {
                   @click="go(entry)"
                 >
                   <span class="item-icon">
-                    <UiIcon :name="entry.group === 'Programmes' ? 'cap' : entry.group === 'Go to' ? 'sparkle' : 'book'" :size="16" />
+                    <UiIcon :name="entry.group === 'programmes' ? 'cap' : entry.group === 'goto' ? 'sparkle' : 'book'" :size="16" />
                   </span>
                   <span class="item-text">
                     <span class="item-title" v-html="highlight(entry.title)" />
@@ -157,15 +169,15 @@ function highlight(text: string): string {
               </div>
             </template>
             <div v-else class="empty">
-              <p>No results for “{{ query }}”.</p>
-              <p class="muted">Try a programme name, a service (“housing”, “scholarships”) or a campus.</p>
+              <p>{{ m.palette.noResults(query) }}</p>
+              <p class="muted">{{ m.palette.noResultsHint }}</p>
             </div>
           </div>
 
           <footer class="foot">
-            <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
-            <span><kbd>↵</kbd> open</span>
-            <span class="muted">{{ loadingCorpus ? 'Loading the full index…' : `${pagesCount.toLocaleString('en')} real pages indexed` }}</span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> {{ m.palette.navigate }}</span>
+            <span><kbd>↵</kbd> {{ m.palette.open }}</span>
+            <span class="muted">{{ loadingCorpus ? m.palette.loadingIndex : m.palette.indexed(n(pagesCount)) }}</span>
           </footer>
         </div>
       </div>

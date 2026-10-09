@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { PageEntry } from '@/content/types'
 import UiIcon from './ui/UiIcon.vue'
+import { useI18n } from '@/i18n'
 
 defineProps<{ entry: PageEntry; showSection?: boolean }>()
+const { m } = useI18n()
 </script>
 
 <template>
@@ -17,7 +19,7 @@ defineProps<{ entry: PageEntry; showSection?: boolean }>()
       </h3>
       <p v-if="entry.description" class="pc-desc">{{ entry.description }}</p>
       <p class="pc-foot">
-        <span v-if="entry.lang === 'it'" class="chip">IT</span>
+        <span v-if="entry.translated" class="chip">{{ m.programme.translated }}</span>
         <span class="pc-go"><UiIcon name="arrow-right" :size="16" /></span>
       </p>
     </div>

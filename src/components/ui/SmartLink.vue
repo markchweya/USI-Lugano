@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { resolveHref } from '@/content/api'
+import { useI18n } from '@/i18n'
 
 /** Routes internally when we host the page, otherwise links out to usi.ch (or elsewhere). */
 const props = defineProps<{ href: string }>()
-const target = computed(() => resolveHref(props.href))
+const { locale } = useI18n()
+const target = computed(() => resolveHref(props.href, locale.value))
 </script>
 
 <template>

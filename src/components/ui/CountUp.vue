@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from '@/i18n'
 
 /** Animates from 0 to `value` the first time it scrolls into view. */
 const props = withDefaults(defineProps<{ value: number; plain?: boolean; duration?: number }>(), { duration: 1600 })
@@ -8,7 +9,8 @@ const shown = ref(0)
 let io: IntersectionObserver | null = null
 let raf = 0
 
-const format = (n: number) => (props.plain ? String(n) : n.toLocaleString('en').replace(/,/g, '’'))
+const { n: fmt } = useI18n()
+const format = (n: number) => (props.plain ? String(n) : fmt(n))
 
 function run() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return void (shown.value = props.value)

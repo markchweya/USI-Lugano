@@ -3,10 +3,12 @@ import { ref } from 'vue'
 import type { GalleryItem } from '@/content/types'
 import YouTubeEmbed from './YouTubeEmbed.vue'
 import UiIcon from '../ui/UiIcon.vue'
+import { useI18n } from '@/i18n'
 
 const props = defineProps<{ items: GalleryItem[] }>()
 const track = ref<HTMLElement>()
 const active = ref(0)
+const { m } = useI18n()
 
 function go(i: number) {
   const el = track.value
@@ -22,18 +24,18 @@ function onScroll() {
 </script>
 
 <template>
-  <div class="carousel" :class="{ single: items.length === 1 }" role="region" aria-roledescription="carousel" aria-label="Media">
+  <div class="carousel" :class="{ single: items.length === 1 }" role="region" aria-roledescription="carousel" :aria-label="m.page.media">
     <div ref="track" class="track" tabindex="0" @scroll.passive="onScroll">
-      <div v-for="(item, i) in items" :key="i" class="slide" :aria-label="`${i + 1} of ${items.length}`" role="group" aria-roledescription="slide">
+      <div v-for="(item, i) in items" :key="i" class="slide" :aria-label="m.page.slideOf(i + 1, items.length)" role="group" aria-roledescription="slide">
         <YouTubeEmbed v-if="item.kind === 'video' && item.youtube" :id="item.youtube" :title="item.caption" />
         <img v-else :src="item.src" :alt="item.alt || ''" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
         <p v-if="item.caption && item.kind === 'image'" class="caption">{{ item.caption }}</p>
       </div>
     </div>
     <div v-if="items.length > 1" class="controls">
-      <button type="button" class="ctrl" :disabled="active === 0" @click="go(active - 1)"><UiIcon name="arrow-left" :size="18" label="Previous" /></button>
+      <button type="button" class="ctrl" :disabled="active === 0" @click="go(active - 1)"><UiIcon name="arrow-left" :size="18" :label="m.page.previous" /></button>
       <span class="count">{{ active + 1 }} / {{ items.length }}</span>
-      <button type="button" class="ctrl" :disabled="active === items.length - 1" @click="go(active + 1)"><UiIcon name="arrow-right" :size="18" label="Next" /></button>
+      <button type="button" class="ctrl" :disabled="active === items.length - 1" @click="go(active + 1)"><UiIcon name="arrow-right" :size="18" :label="m.page.next" /></button>
     </div>
   </div>
 </template>

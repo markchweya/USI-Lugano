@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useLuganoTime } from '@/composables/useLocalTime'
+import { useI18n } from '@/i18n'
 
 /**
  * Stylised Lake Lugano between Monte San Salvatore and Monte Brè.
  * Colours come from CSS variables, so the scene turns from dawn to night with the theme.
  */
 const time = useLuganoTime()
+const { m } = useI18n()
 const stars = Array.from({ length: 40 }, (_, i) => ({
   x: (i * 197) % 800,
   y: (i * 89) % 260,
@@ -16,7 +18,7 @@ const stars = Array.from({ length: 40 }, (_, i) => ({
 
 <template>
   <figure class="scene">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of Lake Lugano between Monte San Salvatore and Monte Brè">
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" :aria-label="m.home.scene.label">
       <defs>
         <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="var(--sky-top)" />

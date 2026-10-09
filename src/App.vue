@@ -5,8 +5,10 @@ import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import CommandPalette from '@/components/CommandPalette.vue'
 import { useTheme } from '@/composables/useTheme'
+import { useI18n } from '@/i18n'
 
 useTheme()
+const { m } = useI18n()
 
 // Announce client-side navigations to screen readers and move focus to the content.
 const route = useRoute()
@@ -27,7 +29,7 @@ watch(
 </script>
 
 <template>
-  <a href="#main" class="skip-link">Skip to content</a>
+  <a href="#main" class="skip-link">{{ m.nav.skipToContent }}</a>
   <AppHeader />
   <main id="main" ref="main" tabindex="-1">
     <RouterView v-slot="{ Component, route: r }">

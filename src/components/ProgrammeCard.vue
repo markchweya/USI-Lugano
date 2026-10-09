@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { getFaculty } from '@/data/faculties'
-import { formatDuration, levelLabels } from '@/data/programmes'
+import { useFaculties } from '@/data/faculties'
+import { useDuration } from '@/data/programmes'
+import { useI18n } from '@/i18n'
 import type { Programme } from '@/content/types'
 import FacultyArt from './ui/FacultyArt.vue'
 import UiIcon from './ui/UiIcon.vue'
 
 const props = withDefaults(defineProps<{ programme: Programme; layout?: 'card' | 'row' }>(), { layout: 'card' })
 
-const faculty = computed(() => getFaculty(props.programme.faculty))
+const { m } = useI18n()
+const faculties = useFaculties()
+const duration = useDuration()
+const faculty = computed(() => faculties.get(props.programme.faculty))
 const facts = computed(() => {
   const p = props.programme
-  return [formatDuration(p), p.ects ? `${p.ects} ECTS` : null, p.languages.join(' / ') || null].filter(Boolean) as string[]
+  return [duration(p), p.ects ? `${p.ects} ECTS` : null, p.languages.join(' / ') || null].filter(Boolean) as string[]
 })
 const seed = computed(() => [...props.programme.slug].reduce((n, c) => n + c.charCodeAt(0), 0))
 </script>
@@ -21,7 +25,7 @@ const seed = computed(() => [...props.programme.slug].reduce((n, c) => n + c.cha
     <div class="media">
       <img v-if="programme.image" :src="programme.image" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
       <FacultyArt v-else :variant="faculty?.art ?? 'grid'" :color="faculty?.color ?? 'var(--lake)'" :seed="seed" :animated="false" />
-      <span class="level">{{ levelLabels[programme.level] }}</span>
+      <span class="level">{{ m.levels[programme.level] }}</span>
     </div>
     <div class="body">
       <p v-if="faculty" class="faculty"><span class="dot" />{{ faculty.short }}</p>
@@ -31,7 +35,7 @@ const seed = computed(() => [...props.programme.slug].reduce((n, c) => n + c.cha
       <p class="summary">{{ programme.summary }}</p>
       <ul v-if="facts.length" class="facts" role="list">
         <li v-for="f in facts" :key="f">{{ f }}</li>
-        <li v-if="programme.lang === 'it'" class="it">Page in Italian</li>
+        <li v-if="programme.translated" class="it">{{ m.programme.translated }}</li>
       </ul>
     </div>
     <span class="go" aria-hidden="true"><UiIcon name="arrow-up-right" :size="18" /></span>

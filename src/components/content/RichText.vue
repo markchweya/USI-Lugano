@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { resolveHref } from '@/content/api'
+import { useI18n } from '@/i18n'
 
 /**
  * Renders sanitised HTML produced by the extractor (tags and href schemes are
@@ -9,13 +10,14 @@ import { resolveHref } from '@/content/api'
  */
 defineProps<{ html: string }>()
 const router = useRouter()
+const { locale } = useI18n()
 
 function onClick(e: MouseEvent) {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
   const a = (e.target as HTMLElement).closest('a')
   const href = a?.getAttribute('href')
   if (!a || !href) return
-  const { internal, href: resolved } = resolveHref(href)
+  const { internal, href: resolved } = resolveHref(href, locale.value)
   e.preventDefault()
   if (internal) router.push(resolved)
   else window.open(resolved, '_blank', 'noopener')

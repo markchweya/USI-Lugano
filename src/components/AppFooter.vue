@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useSiteNav } from '@/content/nav'
 import stats from '@/data/generated/stats.json'
-import { motto } from '@/data/facts'
+import { useI18n } from '@/i18n'
 import BrandMark from './ui/BrandMark.vue'
+import LanguageSwitcher from './ui/LanguageSwitcher.vue'
 import UiIcon from './ui/UiIcon.vue'
 
-const { sections, children } = useSiteNav()
+const { sections, children, count } = useSiteNav()
+const { m, n, d, path } = useI18n()
 const year = new Date().getFullYear()
-const synced = new Date(stats.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 </script>
 
 <template>
@@ -16,14 +17,15 @@ const synced = new Date(stats.generatedAt).toLocaleDateString('en-GB', { day: 'n
       <div class="top">
         <div class="intro">
           <BrandMark />
-          <p class="motto">{{ motto }}</p>
+          <p class="motto">{{ m.footer.motto }}</p>
           <address>
             Università della Svizzera italiana<br />
-            Via Buffi 13, 6900 Lugano, Switzerland
+            {{ m.footer.address }}
           </address>
-          <RouterLink to="/explore" class="btn btn--ghost btn--sm">Explore all {{ stats.pages.toLocaleString('en') }} pages <UiIcon name="arrow-right" :size="16" /></RouterLink>
+          <RouterLink :to="path('explore')" class="btn btn--ghost btn--sm">{{ m.footer.exploreAll(n(count || stats.pages)) }} <UiIcon name="arrow-right" :size="16" /></RouterLink>
+          <LanguageSwitcher variant="inline" class="langs" />
         </div>
-        <nav class="cols" aria-label="Footer">
+        <nav class="cols" :aria-label="m.footer.label">
           <div v-for="s in sections" :key="s.key">
             <p class="col-title">{{ s.label }}</p>
             <ul role="list">
@@ -38,11 +40,14 @@ const synced = new Date(stats.generatedAt).toLocaleDateString('en-GB', { day: 'n
       <p class="wordmark" aria-hidden="true">Lugano<span>·</span>Mendrisio<span>·</span>Bellinzona</p>
 
       <div class="bottom">
-        <p>© {{ year }} USI redesign concept. Content sourced from <a href="https://www.usi.ch" target="_blank" rel="noopener">usi.ch</a>, last synced {{ synced }}.</p>
         <p>
-          <a href="https://www.usi.ch/en/privacy" target="_blank" rel="noopener">Privacy</a>
+          {{ m.footer.rights(year) }} {{ m.footer.sourced }} <a href="https://www.usi.ch" target="_blank" rel="noopener">usi.ch</a>,
+          {{ m.footer.synced(d(stats.generatedAt)) }}.
+        </p>
+        <p>
+          <a href="https://www.usi.ch/en/privacy" target="_blank" rel="noopener">{{ m.footer.privacy }}</a>
           <span aria-hidden="true">·</span>
-          <RouterLink to="/explore">Sitemap</RouterLink>
+          <RouterLink :to="path('explore')">{{ m.footer.sitemap }}</RouterLink>
         </p>
       </div>
     </div>
@@ -78,6 +83,12 @@ const synced = new Date(stats.generatedAt).toLocaleDateString('en-GB', { day: 'n
   gap: 1.25rem;
   justify-items: start;
   align-content: start;
+}
+.langs {
+  margin-top: 0.5rem;
+}
+.langs :deep(.inline-link) {
+  color: var(--ink-2);
 }
 .motto {
   font-family: var(--font-display);
@@ -145,7 +156,7 @@ address {
 .bottom a {
   color: var(--ink-2);
 }
-.bottom p {
+.bottom p:last-child {
   display: flex;
   gap: 0.5rem;
 }
