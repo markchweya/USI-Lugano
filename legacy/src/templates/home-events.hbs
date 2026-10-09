@@ -1,0 +1,12 @@
+{{#each events}}
+  <li class="event">
+    <a href="{{link href}}"{{#if (external href)}} rel="noopener"{{/if}}>
+      <span class="event__icon" aria-hidden="true">{{icon "calendar" 18}}</span>
+      <span class="event__body">
+        <span class="event__title">{{title}}</span>
+        {{#if org}}<span class="event__org">{{org}}</span>{{/if}}
+      </span>
+      {{#if (external href)}}{{icon "external" 16}}{{else}}{{icon "arrow" 16}}{{/if}}
+    </a>
+  </li>
+{{/each}}

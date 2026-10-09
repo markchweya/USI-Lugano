@@ -1,0 +1,71 @@
+{{#each blocks}}
+  {{#if (eq this.t "h")}}
+    {{#if (eq level 2)}}<h2 id="{{id}}">{{text}}</h2>{{else}}<h3 id="{{id}}">{{text}}</h3>{{/if}}
+  {{/if}}
+  {{#if (eq this.t "html")}}{{{html}}}{{/if}}
+  {{#if (eq this.t "image")}}<figure class="figure"><img src="{{src}}" alt="{{alt}}" loading="lazy" decoding="async"></figure>{{/if}}
+  {{#if (eq this.t "video")}}
+    <figure class="figure figure--video">
+      <button type="button" class="video-facade js-video" data-youtube="{{youtube}}" aria-label="{{t "page.playVideo"}}{{#if caption}}: {{caption}}{{/if}}">
+        <img src="https://i.ytimg.com/vi/{{youtube}}/hqdefault.jpg" alt="" loading="lazy">
+        <span class="video-facade__play">{{icon "play" 28}}</span>
+      </button>
+      {{#if caption}}<figcaption>{{caption}}</figcaption>{{/if}}
+    </figure>
+  {{/if}}
+  {{#if (eq this.t "gallery")}}
+    <div class="carousel js-carousel" role="region" aria-roledescription="carousel" aria-label="{{t "page.media"}}">
+      <div class="carousel__track js-track" tabindex="0">
+        {{#each items}}
+          <figure class="slide" role="group" aria-roledescription="slide">
+            {{#if (eq kind "video")}}
+              <button type="button" class="video-facade js-video" data-youtube="{{youtube}}" aria-label="{{t "page.playVideo"}}{{#if caption}}: {{caption}}{{/if}}">
+                <img src="https://i.ytimg.com/vi/{{youtube}}/hqdefault.jpg" alt="" loading="lazy">
+                <span class="video-facade__play">{{icon "play" 28}}</span>
+              </button>
+            {{else}}
+              <img src="{{src}}" alt="{{alt}}" loading="lazy" decoding="async">
+            {{/if}}
+            {{#if caption}}<figcaption>{{caption}}</figcaption>{{/if}}
+          </figure>
+        {{/each}}
+      </div>
+      {{#if items.[1]}}
+        <div class="carousel__controls">
+          <button type="button" class="icon-button icon-button--outline js-slide-prev" aria-label="{{t "page.previous"}}">{{icon "chevronLeft" 18}}</button>
+          <span class="carousel__count js-slide-count" aria-live="polite"></span>
+          <button type="button" class="icon-button icon-button--outline js-slide-next" aria-label="{{t "page.next"}}">{{icon "chevron" 18}}</button>
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
+  {{#if (eq this.t "accordion")}}
+    <div class="accordion">
+      {{#each items}}
+        <details class="accordion__item">
+          <summary>{{title}}</summary>
+          <div class="accordion__body">{{{html}}}</div>
+        </details>
+      {{/each}}
+    </div>
+  {{/if}}
+  {{#if (eq this.t "quote")}}
+    <figure class="quote">
+      <blockquote>{{{html}}}</blockquote>
+      <figcaption>
+        {{#if photo}}<img src="{{photo}}" alt="" loading="lazy" width="48" height="48">{{/if}}
+        <span><strong>{{name}}</strong>{{#if role}}<br>{{role}}{{/if}}</span>
+      </figcaption>
+    </figure>
+  {{/if}}
+  {{#if (eq this.t "cards")}}
+    <ul class="link-cards">
+      {{#each items}}
+        <li><a href="{{link href}}">
+          {{#if image}}<img src="{{image}}" alt="" loading="lazy">{{/if}}
+          <span>{{title}}</span>{{icon "arrow" 16}}
+        </a></li>
+      {{/each}}
+    </ul>
+  {{/if}}
+{{/each}}

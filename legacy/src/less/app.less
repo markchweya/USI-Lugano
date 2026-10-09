@@ -1,0 +1,15 @@
+// USI Legacy Edition — stylesheet entry point.
+@import (reference) 'mixins.less';
+@import 'fonts.less';
+@import 'tokens.less';
+@import 'base.less';
+@import 'components.less';
+@import 'shell.less';
+@import 'home.less';
+@import 'listing.less';
+@import 'page.less';
+@import 'search.less';
+@import 'colophon.less';
+
+// Last, so a faculty accent wins over component defaults.
+.faculty-accents();

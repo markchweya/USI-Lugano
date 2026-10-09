@@ -1,0 +1,20 @@
+<header class="page-hero">
+  <p class="eyebrow">{{t "explore.eyebrow"}}</p>
+  <h1 class="page-hero__title" tabindex="-1"><span class="js-heading-a">&nbsp;</span> <em>{{t "explore.headingB"}}</em></h1>
+  <p class="page-hero__lede js-lede">&nbsp;</p>
+</header>
+
+<div class="explore">
+  <form class="explore__search" role="search">
+    <label class="visually-hidden" for="explore-q">{{t "explore.filter"}}</label>
+    <div class="input-icon input-icon--large">
+      {{icon "search" 20}}
+      <input id="explore-q" class="input js-q" type="search" value="{{q}}" placeholder="{{t "explore.placeholder"}}" autocomplete="off">
+    </div>
+  </form>
+  <div class="tabs js-tabs" role="tablist" aria-label="{{t "explore.sections"}}"></div>
+  <section aria-labelledby="explore-count">
+    <h2 id="explore-count" class="explore__count js-count" aria-live="polite">&nbsp;</h2>
+    <div class="js-list"><ul class="entry-list">{{#each (range 8)}}<li class="entry-card entry-card--skeleton" aria-hidden="true"></li>{{/each}}</ul></div>
+  </section>
+</div>

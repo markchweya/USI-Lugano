@@ -1,0 +1,5 @@
+{{#each tabs}}
+  <button type="button" class="tab js-tab" role="tab" data-key="{{key}}" aria-selected="{{#if selected}}true{{else}}false{{/if}}" tabindex="{{#if selected}}0{{else}}-1{{/if}}">
+    {{label}} <span class="tab__count">{{count}}</span>
+  </button>
+{{/each}}

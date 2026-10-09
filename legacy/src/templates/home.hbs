@@ -1,0 +1,123 @@
+<section class="hero" aria-labelledby="home-title">
+  <div class="hero__copy">
+    <p class="eyebrow">{{t "home.eyebrow"}}</p>
+    <h1 id="home-title" class="hero__title" tabindex="-1">
+      <span>{{t "home.mottoA"}}</span>
+      <em>{{t "home.mottoB"}}</em>
+    </h1>
+    <p class="hero__lede">{{t "home.lede"}}</p>
+
+    <form class="intent js-intent" aria-label="{{t "study.title"}}">
+      <span class="intent__text">{{t "home.intentStudy"}}</span>
+      <label class="visually-hidden" for="intent-level">{{t "home.intentLevelLabel"}}</label>
+      <span class="select">
+        <select id="intent-level" name="level">
+          <option value="">{{t "home.anyLevel"}}</option>
+          {{#each levels}}<option value="{{key}}">{{t "home.levelOption" label}}</option>{{/each}}
+        </select>
+      </span>
+      <span class="intent__text">{{t "home.intentIn"}}</span>
+      <label class="visually-hidden" for="intent-field">{{t "home.intentFieldLabel"}}</label>
+      <span class="select">
+        <select id="intent-field" name="faculty">
+          <option value="">{{t "home.anyField"}}</option>
+          {{#each faculties}}<option value="{{slug}}">{{name}}</option>{{/each}}
+        </select>
+      </span>
+      <button type="submit" class="button button--signal">{{t "home.showProgrammes"}} {{icon "arrow" 18}}</button>
+    </form>
+    <p class="hero__hint js-search-hint">&nbsp;</p>
+  </div>
+
+  <figure class="hero__photo">
+    <img src="{{hero.src}}" srcset="{{hero.srcset}}" sizes="(min-width: 1120px) 46vw, 100vw" alt="{{t "home.scene.label"}}" width="1440" height="960" fetchpriority="high">
+    <figcaption>{{icon "pin" 15}} {{t "home.scene.caption"}} <span>{{t "home.scene.credit"}}</span></figcaption>
+  </figure>
+</section>
+
+<section class="facts" aria-label="{{t "home.factsLabel"}}">
+  <dl class="facts__list">
+    {{#each facts}}
+      <div class="facts__item">
+        <dt>{{t (concat "home.facts." key)}}</dt>
+        <dd class="js-count" data-value="{{value}}"{{#if plain}} data-plain="1"{{/if}}>{{#if plain}}{{value}}{{else}}{{num value}}{{/if}}</dd>
+      </div>
+    {{/each}}
+  </dl>
+  <p class="facts__source"><a href="{{link portrait}}">{{t "home.factsSource"}}</a></p>
+</section>
+
+<section class="section" aria-labelledby="study-title">
+  <div class="section__head">
+    <div>
+      <p class="eyebrow">{{t "home.study.eyebrow"}}</p>
+      <h2 id="study-title" class="section__title">{{t "home.study.title"}}</h2>
+      <p class="section__lede js-study-lede">&nbsp;</p>
+    </div>
+    <div class="section__actions">
+      <button type="button" class="icon-button icon-button--outline js-rail-prev" aria-label="{{t "home.study.scrollLeft"}}" disabled>{{icon "chevronLeft" 20}}</button>
+      <button type="button" class="icon-button icon-button--outline js-rail-next" aria-label="{{t "home.study.scrollRight"}}">{{icon "chevron" 20}}</button>
+      <a class="button button--ghost" href="{{study}}">{{t "home.study.all"}} {{icon "arrow" 18}}</a>
+    </div>
+  </div>
+  <div class="rail js-rail" role="region" aria-label="{{t "home.study.rail"}}" tabindex="0">
+    {{#each (range 4)}}<div class="card card--skeleton" aria-hidden="true"></div>{{/each}}
+  </div>
+</section>
+
+<section class="section section--tint" aria-labelledby="faculties-title">
+  <div class="section__head">
+    <div>
+      <p class="eyebrow">{{t "home.faculties.eyebrow"}}</p>
+      <h2 id="faculties-title" class="section__title">{{t "home.faculties.title"}}</h2>
+      <p class="section__lede">{{t "home.faculties.lede"}}</p>
+    </div>
+  </div>
+  <ul class="faculty-grid js-faculties">
+    {{#each faculties}}<li class="faculty faculty--skeleton is-{{slug}}" aria-hidden="true"></li>{{/each}}
+  </ul>
+</section>
+
+<section class="section" aria-labelledby="areas-title">
+  <div class="section__head">
+    <div>
+      <p class="eyebrow">{{t "home.areas.eyebrow"}}</p>
+      <h2 id="areas-title" class="section__title">{{t "home.areas.title"}}</h2>
+      <p class="section__lede js-areas-lede">&nbsp;</p>
+    </div>
+    <div class="section__actions">
+      <a class="button button--ghost" href="{{explore}}">{{t "nav.explore"}} {{icon "arrow" 18}}</a>
+    </div>
+  </div>
+  <div class="areas js-areas"></div>
+</section>
+
+<section class="section section--split" aria-labelledby="events-title">
+  <div class="section__head section__head--stack">
+    <p class="eyebrow">{{t "home.events.eyebrow"}}</p>
+    <h2 id="events-title" class="section__title">{{t "home.events.title"}}</h2>
+    <p class="section__lede">{{t "home.events.lede"}}</p>
+  </div>
+  <ol class="events js-events"></ol>
+</section>
+
+<section class="legacy-teaser" aria-labelledby="legacy-title">
+  <div class="legacy-teaser__inner">
+    <p class="eyebrow">{{t "home.legacy.eyebrow"}}</p>
+    <h2 id="legacy-title">{{t "home.legacy.title"}}</h2>
+    <p>{{t "home.legacy.lede"}}</p>
+    <a class="button button--light" href="{{colophon}}">{{t "home.legacy.cta"}} {{icon "arrow" 18}}</a>
+  </div>
+  <ul class="legacy-teaser__chips" aria-hidden="true">
+    <li>CoffeeScript</li><li>Backbone</li><li>jQuery</li><li>Underscore</li><li>Handlebars</li><li>RequireJS</li><li>LESS</li><li>Grunt</li><li>Moment.js</li>
+  </ul>
+</section>
+
+<section class="cta" aria-labelledby="cta-title">
+  <p class="eyebrow">{{t "home.cta.eyebrow"}}</p>
+  <h2 id="cta-title" class="cta__title">{{t "home.cta.title"}}</h2>
+  <div class="cta__actions">
+    <a class="button button--signal" href="{{study}}">{{t "home.cta.find"}} {{icon "arrow" 18}}</a>
+    <button type="button" class="button button--ghost js-search-open">{{icon "search" 18}} {{t "home.cta.search"}}</button>
+  </div>
+</section>

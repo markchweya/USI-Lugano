@@ -1,0 +1,9 @@
+{{#each faculties}}
+  <li class="faculty is-{{slug}}">
+    <a href="{{href}}">
+      <span class="faculty__art" aria-hidden="true"></span>
+      <span class="faculty__name">{{name}}</span>
+      <span class="faculty__count">{{t "home.faculties.count" count}} {{icon "arrow" 16}}</span>
+    </a>
+  </li>
+{{/each}}

@@ -1,0 +1,6 @@
+{{#if empty}}
+  <p class="empty">{{t "explore.empty"}}</p>
+{{else}}
+  <ul class="entry-list">{{#each entries}}{{> entry-card}}{{/each}}</ul>
+  {{#if more}}<p class="more"><button type="button" class="button button--ghost js-more">{{t "explore.more"}} <span class="more__left">{{more}}</span></button></p>{{/if}}
+{{/if}}

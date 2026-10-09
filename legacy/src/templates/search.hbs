@@ -1,0 +1,14 @@
+<div class="search__backdrop js-backdrop"></div>
+<div class="search__panel" role="dialog" aria-modal="true" aria-label="{{t "search.dialog"}}">
+  <div class="search__bar">
+    {{icon "search" 20}}
+    <input class="search__input js-q" type="search" role="combobox" aria-expanded="true" aria-controls="search-results" aria-autocomplete="list"
+      aria-label="{{t "search.dialog"}}" placeholder="{{t "search.placeholder"}}" autocomplete="off" spellcheck="false">
+    <button type="button" class="search__close js-close" aria-label="{{t "nav.close"}}"><kbd>Esc</kbd></button>
+  </div>
+  <div id="search-results" class="search__results js-results" role="listbox" aria-label="{{t "search.results"}}"></div>
+  <div class="search__foot">
+    <span class="js-status" role="status"></span>
+    <span class="search__keys" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd> {{t "search.navigate"}} <kbd>↵</kbd> {{t "search.open"}}</span>
+  </div>
+</div>

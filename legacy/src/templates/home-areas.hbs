@@ -1,0 +1,10 @@
+{{#each areas}}
+  <article class="area">
+    <h3 class="area__title"><a href="{{href}}">{{label}}</a></h3>
+    <p class="area__blurb">{{blurb}}</p>
+    <ul class="area__links">
+      {{#each children}}<li><a href="#{{path}}">{{title}}</a></li>{{/each}}
+    </ul>
+    <a class="area__all" href="{{href}}">{{allIn}} <span class="area__count">{{count}}</span> {{icon "arrow" 16}}</a>
+  </article>
+{{/each}}

@@ -1,0 +1,33 @@
+<div class="header-bar">
+  <a class="brand" href="{{home}}" aria-label="{{t "nav.home"}}">
+    <span class="brand__mark" aria-hidden="true">USI</span>
+    <span class="brand__text">
+      <span class="brand__name">Università della Svizzera italiana</span>
+      <span class="brand__edition">{{t "meta.edition"}}</span>
+    </span>
+  </a>
+
+  <nav class="primary-nav js-nav" id="primary-nav" aria-label="{{t "nav.main"}}">
+    <ul>
+      {{#each nav}}
+        <li><a href="{{href}}"{{#if active}} aria-current="page"{{/if}}>{{label}}</a></li>
+      {{/each}}
+    </ul>
+    <ul class="lang-switch" aria-label="{{t "nav.language"}}">
+      {{#each langs}}
+        <li><a href="{{href}}" hreflang="{{code}}" lang="{{code}}"{{#if current}} aria-current="true"{{/if}}><abbr title="{{name}}">{{code}}</abbr></a></li>
+      {{/each}}
+    </ul>
+  </nav>
+
+  <div class="header-tools">
+    <button type="button" class="search-trigger js-search-open" aria-label="{{t "nav.search"}}" aria-keyshortcuts="/ Control+K Meta+K">
+      {{icon "search" 18}}<span class="search-trigger__label">{{t "nav.searchShort"}}</span><kbd aria-hidden="true">/</kbd>
+    </button>
+    <button type="button" class="icon-button js-theme" aria-label="{{themeLabel}}" title="{{themeLabel}}">{{icon themeIcon 19}}</button>
+    {{#if sealed}}
+      <button type="button" class="icon-button js-lock" aria-label="{{t "nav.lockLabel"}}" title="{{t "nav.lockLabel"}}">{{icon "lock" 18}}</button>
+    {{/if}}
+    <button type="button" class="icon-button menu-toggle js-menu" aria-controls="primary-nav" aria-expanded="{{#if menuOpen}}true{{else}}false{{/if}}" aria-label="{{t "nav.menu"}}">{{icon "menu" 20}}</button>
+  </div>
+</div>

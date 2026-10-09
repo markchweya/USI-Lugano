@@ -26,6 +26,15 @@ jobs:
       - run: npm ci
       - run: npm test
 
+      # Legacy Edition: run its specs and check ./legacy/sealed was built from
+      # the current sources (the password itself never reaches CI).
+      - name: Legacy Edition — test and verify seal
+        working-directory: legacy
+        run: |
+          npm ci
+          npx grunt test
+          npx grunt verify
+
       - name: Build
         run: npm run build
         env:
@@ -37,6 +46,14 @@ jobs:
         run: node scripts/static-routes.mjs
         env:
           SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+      # The sealed Legacy Edition is served at /legacy/; it reads the shared
+      # content from /content/, plus the generated programme and event data.
+      - name: Add the Legacy Edition
+        run: |
+          mkdir -p dist/legacy
+          cp -R legacy/sealed/. dist/legacy/
+          cp src/data/generated/programmes.json src/data/generated/events.json src/data/generated/stats.json dist/content/
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4

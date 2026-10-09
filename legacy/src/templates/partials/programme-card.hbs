@@ -1,0 +1,19 @@
+<article class="card programme is-{{faculty}}">
+  <a class="card__link" href="#{{path}}">
+    <div class="card__media">
+      {{#if image}}<img src="{{image}}" alt="" loading="lazy" decoding="async">{{else}}<span class="card__art" aria-hidden="true"></span>{{/if}}
+      <span class="chip chip--level">{{levelName level}}</span>
+    </div>
+    <div class="card__body">
+      <p class="card__kicker">{{facultyName faculty "short"}}</p>
+      <h3 class="card__title">{{fullTitle}}</h3>
+      <p class="card__text">{{summary}}</p>
+      <p class="card__meta">
+        {{#if ects}}<span>{{ects}} {{t "programme.credits"}}</span>{{/if}}
+        {{#if semesters}}<span>{{t "programme.semesters" semesters}}</span>{{/if}}
+        {{#if languages.length}}<span>{{join languages " · "}}</span>{{/if}}
+        {{#if untranslated}}<span class="chip chip--muted">{{t "programme.englishOnly"}}</span>{{else}}{{#if translated}}<span class="chip chip--muted">{{t "programme.translated"}}</span>{{/if}}{{/if}}
+      </p>
+    </div>
+  </a>
+</article>

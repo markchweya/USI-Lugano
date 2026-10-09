@@ -1,0 +1,24 @@
+<div class="footer-inner">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <p class="footer-motto">{{t "footer.motto"}}</p>
+      <address>{{t "footer.address"}}</address>
+    </div>
+    <nav class="footer-nav" aria-label="{{t "footer.label"}}">
+      <ul>
+        <li><a href="{{study}}">{{t "nav.programmes"}}</a></li>
+        {{#each sections}}<li><a href="{{href}}">{{label}}</a></li>{{/each}}
+      </ul>
+      <ul>
+        <li><a href="{{explore}}" class="js-page-count">{{t "nav.explore"}}</a></li>
+        <li><a href="{{colophon}}">{{t "footer.colophon"}}</a></li>
+        {{#if sealed}}<li><button type="button" class="link-button js-lock">{{icon "lock" 15}} {{t "nav.lock"}}</button></li>{{/if}}
+      </ul>
+    </nav>
+  </div>
+  <p class="footer-wordmark" aria-hidden="true">USI <em>{{t "meta.edition"}}</em></p>
+  <div class="footer-bottom">
+    <p>{{t "footer.concept"}}</p>
+    <p>{{t "footer.sourced"}} <a href="https://www.usi.ch/{{lang}}" rel="noopener">usi.ch</a> · © {{year}}</p>
+  </div>
+</div>

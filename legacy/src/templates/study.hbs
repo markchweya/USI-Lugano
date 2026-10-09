@@ -1,0 +1,52 @@
+<header class="page-hero page-hero--study">
+  <p class="eyebrow">{{t "study.eyebrow"}}</p>
+  <h1 class="page-hero__title" tabindex="-1">{{t "study.headingA"}} <em>{{t "study.headingB"}}</em></h1>
+  <p class="page-hero__lede">{{t "study.lede"}}</p>
+</header>
+
+<div class="finder">
+  <form class="filters" aria-label="{{t "study.filters"}}">
+    <div class="filters__group">
+      <label class="filters__label" for="finder-q">{{t "study.search"}}</label>
+      <div class="input-icon">
+        {{icon "search" 18}}
+        <input id="finder-q" class="input js-q" type="search" name="q" value="{{state.q}}" placeholder="{{t "study.searchPlaceholder"}}" autocomplete="off">
+      </div>
+    </div>
+
+    <fieldset class="filters__group">
+      <legend class="filters__label">{{t "study.level"}}</legend>
+      <div class="segmented">
+        <label><input class="js-filter" type="radio" name="level" value=""{{#unless state.level}} checked{{/unless}}><span>{{t "study.all"}}</span></label>
+        {{#each levels}}<label><input class="js-filter" type="radio" name="level" value="{{key}}"{{#if checked}} checked{{/if}}><span>{{label}}</span></label>{{/each}}
+      </div>
+    </fieldset>
+
+    <div class="filters__group">
+      <label class="filters__label" for="finder-faculty">{{t "study.faculty"}}</label>
+      <span class="select select--block">
+        <select id="finder-faculty" class="js-filter" name="faculty">
+          <option value="">{{t "study.allFaculties"}}</option>
+          {{#each faculties}}<option value="{{slug}}"{{#if selected}} selected{{/if}}>{{name}}</option>{{/each}}
+        </select>
+      </span>
+    </div>
+
+    <fieldset class="filters__group">
+      <legend class="filters__label">{{t "study.taughtIn"}}</legend>
+      <div class="segmented">
+        <label><input class="js-filter" type="radio" name="taught" value=""{{#unless state.taught}} checked{{/unless}}><span>{{t "study.any"}}</span></label>
+        {{#each taught}}<label><input class="js-filter" type="radio" name="taught" value="{{key}}"{{#if checked}} checked{{/if}}><span>{{label}}</span></label>{{/each}}
+      </div>
+    </fieldset>
+
+    <button type="button" class="link-button js-reset" hidden>{{t "study.reset"}}</button>
+  </form>
+
+  <section class="finder__results" aria-labelledby="finder-count">
+    <h2 id="finder-count" class="finder__count js-count" aria-live="polite">&nbsp;</h2>
+    <div class="js-results">
+      <div class="card-grid">{{#each (range 6)}}<div class="card card--skeleton" aria-hidden="true"></div>{{/each}}</div>
+    </div>
+  </section>
+</div>

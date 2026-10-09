@@ -1,0 +1,63 @@
+<article class="content-page" lang="{{page.lang}}">
+  <header class="content-hero">
+    {{#if crumbs.length}}
+      <nav class="crumbs" aria-label="{{t "page.breadcrumb"}}">
+        <ol>
+          {{#each crumbs}}<li>{{#if path}}<a href="{{link path}}">{{label}}</a>{{else}}<span>{{label}}</span>{{/if}}</li>{{/each}}
+        </ol>
+      </nav>
+    {{/if}}
+    <h1 class="content-hero__title" tabindex="-1">{{page.title}}</h1>
+    {{#if page.description}}<p class="content-hero__lede">{{page.description}}</p>{{/if}}
+    {{#if ctas.length}}
+      <p class="content-hero__ctas">
+        {{#each ctas}}<a class="button {{#if @first}}button--signal{{else}}button--ghost{{/if}}" href="{{link href}}">{{label}} {{icon "arrow" 16}}</a>{{/each}}
+      </p>
+    {{/if}}
+  </header>
+
+  {{#if translated}}
+    <aside class="notice" lang="de">
+      <p>{{t "page.translatedNotice"}}</p>
+      <a href="{{link original}}">{{t "page.translatedFrom"}} {{icon "arrow" 15}}</a>
+    </aside>
+  {{/if}}
+  {{#if fallback}}
+    <aside class="notice notice--warn" lang="de"><p>{{t "page.notTranslated"}}</p></aside>
+  {{/if}}
+
+  <div class="content-layout{{#unless (any nav.length toc links.length)}} content-layout--single{{/unless}}">
+    <div class="prose js-prose">
+      {{#if thin}}<p class="notice notice--soft">{{t "page.directory"}}</p>{{/if}}
+      {{> blocks}}
+    </div>
+
+    {{#if (any nav.length toc links.length)}}
+      <aside class="content-aside">
+        {{#if toc}}
+          <nav class="aside-block" aria-labelledby="toc-title">
+            <h2 id="toc-title" class="aside-block__title">{{t "page.onThisPage"}}</h2>
+            <ol class="toc">{{#each toc}}<li><a class="js-anchor" href="#{{id}}" data-target="{{id}}">{{text}}</a></li>{{/each}}</ol>
+          </nav>
+        {{/if}}
+        {{#if nav.length}}
+          <nav class="aside-block" aria-labelledby="section-title">
+            <h2 id="section-title" class="aside-block__title">{{t "page.inSection"}}</h2>
+            <ul class="aside-links">{{#each nav}}<li><a href="{{link href}}">{{label}}</a></li>{{/each}}</ul>
+          </nav>
+        {{/if}}
+        {{#if links.length}}
+          <nav class="aside-block" aria-labelledby="links-title">
+            <h2 id="links-title" class="aside-block__title">{{t "page.quickLinks"}}</h2>
+            <ul class="aside-links">{{#each links}}<li><a href="{{link href}}"{{#if (external href)}} rel="noopener" class="is-external"{{/if}}>{{label}}</a></li>{{/each}}</ul>
+          </nav>
+        {{/if}}
+      </aside>
+    {{/if}}
+  </div>
+
+  <footer class="content-foot">
+    <p>{{t "page.synced" synced}}</p>
+    <a href="{{page.source}}" rel="noopener">{{t "page.openOriginal"}} {{icon "external" 15}}</a>
+  </footer>
+</article>
