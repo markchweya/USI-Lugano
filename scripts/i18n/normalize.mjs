@@ -56,6 +56,21 @@ export const RULES = [
   [/Kundschaft: die Verbündete von Bally/g, 'Auftraggeber: «the Bally’s ally»'],
   [/Auftraggeber: «the Bally's ally»/g, 'Auftraggeber: «the Bally’s ally»'],
 
+  // Official names: CSCS uses its English name in German too; one form for Ticino's DI.
+  [/Schweizerisches Hochleistungsrechenzentrum/g, 'Swiss National Supercomputing Centre (CSCS)'],
+  [/Departement für Institutionen/g, 'Departement der Institutionen'],
+  // Ticino towns as employers: German form, matching the other public bodies.
+  [/Città di (Lugano|Bellinzona|Mendrisio|Locarno|Chiasso) [-–] Amministrazione comunale/g, 'Stadt $1 - Stadtverwaltung'],
+  [/Stadt (Lugano|Bellinzona|Mendrisio|Locarno|Chiasso) – Stadtverwaltung/g, 'Stadt $1 - Stadtverwaltung'],
+  // Swiss federal bodies: official German names, whichever language the source used.
+  [/\bAmministrazione Federale\b/g, 'Bundesverwaltung'],
+  [/\bBanca nazionale svizzera\b/gi, 'Schweizerische Nationalbank'],
+  [/\bSvizzera Turismo\b/g, 'Schweiz Tourismus'],
+  [/\bUfficio federale delle costruzioni e della logistica\b/g, 'Bundesamt für Bauten und Logistik'],
+  [/\bAutorità federale di vigilanza sui mercati finanziari\b/g, 'Eidgenössische Finanzmarktaufsicht'],
+  [/\bKantonsverwaltung Tessin\b/g, 'Kantonale Verwaltung'],
+  [/\bCittà di (Lugano|Bellinzona|Mendrisio|Locarno|Chiasso)\b/g, 'Stadt $1'],
+
   // Company names stay as the source spells them, even when a typo is suspected.
   [/\bSecondo Mona\b/g, 'Secondo Monda'],
   // Swiss quotation marks for quoted text (straight quotes arrive HTML-escaped).

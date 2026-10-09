@@ -30,6 +30,16 @@ describe('German terminology normalisation', () => {
     expect(normalize('<p>Projekt &quot;Blitz&quot; für Kunden</p>')).toBe('<p>Projekt «Blitz» für Kunden</p>')
   })
 
+  it('uses German names for Ticino towns as employers', () => {
+    expect(normalize('Città di Lugano - Amministrazione comunale, Lugano')).toBe('Stadt Lugano - Stadtverwaltung, Lugano')
+  })
+
+  it('aligns federal bodies and town administrations across variants', () => {
+    expect(normalize('Banca nazionale svizzera, Zürich')).toBe('Schweizerische Nationalbank, Zürich')
+    expect(normalize('Città di Lugano – Amministrazione comunale')).toBe('Stadt Lugano - Stadtverwaltung')
+    expect(normalize('Kantonsverwaltung Tessin')).toBe('Kantonale Verwaltung')
+  })
+
   it('keeps names German speakers use in English', () => {
     expect(normalize('Der Career Service und der Alumni Service')).toBe('Der Career Service und der Alumni Service')
   })
