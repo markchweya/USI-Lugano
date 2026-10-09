@@ -14,9 +14,18 @@ const PAGE_SIZE = 48
 const { locale, m, n } = useI18n()
 const all = shallowRef<PageEntry[]>([])
 const failed = ref(false)
-loadIndex()
-  .then((e) => (all.value = e))
-  .catch(() => (failed.value = true))
+watch(
+  locale,
+  (l) => {
+    failed.value = false
+    loadIndex(l)
+      .then((e) => {
+        if (l === locale.value) all.value = e
+      })
+      .catch(() => (failed.value = true))
+  },
+  { immediate: true },
+)
 
 /** Pages in the current language only. */
 const entries = computed(() => entriesFor(all.value, locale.value))
@@ -89,7 +98,8 @@ const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.
 
     </div>
 
-    <section class="container" aria-live="polite">
+    <section class="container" aria-live="polite" aria-labelledby="results-heading">
+      <h2 id="results-heading" class="visually-hidden">{{ m.palette.results }}</h2>
       <p v-if="failed" class="empty">{{ m.explore.failed }}</p>
       <template v-else>
         <p class="result-count">{{ m.explore.count(n(filtered.length)) }}</p>

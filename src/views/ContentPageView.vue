@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { findEntry, loadIndex, loadPage, normalizePath } from '@/content/api'
+import { findEntry, langOfPath, loadIndex, loadPage, normalizePath } from '@/content/api'
 import type { Page, PageEntry } from '@/content/types'
 import { findProgramme, useDuration } from '@/data/programmes'
 import { useFaculties } from '@/data/faculties'
@@ -37,13 +37,11 @@ watch(
     page.value = null
     fallback.value = false
     try {
-      const [entry, all] = await Promise.all([findEntry(p), loadIndex()])
+      const [entry, all] = await Promise.all([findEntry(p), loadIndex(langOfPath(p))])
       index.value = all
-      let target = entry
-      if (!target && p.startsWith('/de/')) {
-        target = await findEntry(`/en${p.slice(3)}`)
-        fallback.value = !!target
-      }
+      const target = entry
+      // German index lists not-yet-translated English pages; show the original with a notice.
+      fallback.value = !!entry?.untranslated
       if (!target) {
         state.value = 'missing'
         setAlternates({})

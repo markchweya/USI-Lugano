@@ -1,4 +1,4 @@
-import { computed, shallowRef } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { entriesFor, loadIndex } from './api'
 import type { PageEntry } from './types'
 import { useI18n, type Locale } from '@/i18n'
@@ -28,11 +28,20 @@ export function useSiteNav() {
   const { locale, m } = useI18n()
   if (!started) {
     started = true
-    loadIndex()
-      .then((e) => (entries.value = e))
-      .catch(() => {
-        started = false
-      })
+    // One shared watcher: load the current language's index, again on every switch.
+    watch(
+      locale,
+      (l) => {
+        loadIndex(l)
+          .then((e) => {
+            if (l === locale.value) entries.value = e
+          })
+          .catch(() => {
+            /* menus stay empty; content pages still work */
+          })
+      },
+      { immediate: true },
+    )
   }
 
   const localEntries = computed(() => entriesFor(entries.value, locale.value))

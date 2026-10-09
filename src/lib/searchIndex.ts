@@ -37,7 +37,7 @@ export function buildSearchIndex(locale: Locale): Promise<SearchEntry[]> {
   let p = built.get(locale)
   if (!p) {
     const base = instant(locale)
-    p = loadIndex()
+    p = loadIndex(locale)
       .then((pages) => {
         const programmePaths = new Set(programmes.map((x) => x.path))
         return [

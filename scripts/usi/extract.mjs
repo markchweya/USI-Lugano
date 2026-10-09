@@ -3,7 +3,8 @@
  * Turns the raw HTML cached by crawl.mjs into structured, sanitised JSON.
  *
  * Outputs
- *   public/content/index.json        lightweight index of every page (search, routing)
+ *   public/content/index.json        full index of every page (build scripts)
+ *   public/content/index.<lang>.json  per-language index the browser loads (menus, search)
  *   public/content/pages/<id>.json   full page: blocks, local nav, CTAs, links
  *   src/data/generated/programmes.json  degree programmes with facts parsed from text
  *   src/data/generated/events.json      event teasers seen across the site
@@ -535,9 +536,25 @@ async function main() {
   index.sort((a, b) => a.path.localeCompare(b.path))
   const events = [...eventMap.values()]
 
+  // Full index for build scripts; the browser loads one small index per language.
   await writeFile(join(OUT_PUBLIC, 'index.json'), JSON.stringify(index))
+  const deOwn = new Set(index.filter((e) => e.lang === 'de').map((e) => e.path))
+  for (const lang of ['en', 'it', 'de']) {
+    const own = index.filter((e) => e.lang === lang)
+    // German lists English pages it hasn't translated yet at their /de path.
+    const pending =
+      lang === 'de'
+        ? index
+            .filter((e) => e.lang === 'en' && !deOwn.has(`/de${e.path.slice(3)}`))
+            .map((e) => ({ ...e, path: `/de${e.path.slice(3)}`, untranslated: true }))
+        : []
+    await writeFile(join(OUT_PUBLIC, `index.${lang}.json`), JSON.stringify([...own, ...pending]))
+  }
   await writeFile(join(OUT_SRC, 'programmes.json'), JSON.stringify(deduped, null, 1))
-  await writeFile(join(OUT_SRC, 'events.json'), JSON.stringify(events, null, 1))
+  // The home page shows a handful per language; ship only what it can use.
+  const EVENTS_PER_LANG = 12
+  const slimEvents = ['en', 'it'].flatMap((l) => events.filter((e) => e.lang === l).slice(0, EVENTS_PER_LANG))
+  await writeFile(join(OUT_SRC, 'events.json'), JSON.stringify(slimEvents, null, 1))
   await writeFile(
     join(OUT_SRC, 'stats.json'),
     JSON.stringify(
