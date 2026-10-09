@@ -15,6 +15,8 @@ import { createHash } from 'node:crypto'
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import * as cheerio from 'cheerio'
+import { existsSync } from 'node:fs'
+import { MEMORY, translatePage } from '../i18n/segments.mjs'
 
 const ROOT = process.cwd()
 const CACHE = join(ROOT, '.cache/usi')
@@ -350,6 +352,7 @@ async function main() {
   const eventMap = new Map()
   const textByPath = new Map()
   const candidates = []
+  const enPages = []
   let blockCount = 0
 
   for (const [path, meta] of ok) {
@@ -424,10 +427,9 @@ async function main() {
     }
     index.push(entry)
 
-    await writeFile(
-      join(OUT_PUBLIC, 'pages', `${pageId}.json`),
-      JSON.stringify({ ...entry, alternates, breadcrumb: crumbs, blocks, ctas, nav, links, source: ORIGIN + path, fetchedAt: meta.fetchedAt }),
-    )
+    const full = { ...entry, alternates, breadcrumb: crumbs, blocks, ctas, nav, links, source: ORIGIN + path, fetchedAt: meta.fetchedAt }
+    await writeFile(join(OUT_PUBLIC, 'pages', `${pageId}.json`), JSON.stringify(full))
+    if (lang === 'en') enPages.push(full)
 
     for (const ev of extractEvents($, path)) {
       if (!eventMap.has(ev.href)) eventMap.set(ev.href, ev)
@@ -467,6 +469,37 @@ async function main() {
   const deduped = programmes
   deduped.forEach((p) => delete p.alternates)
 
+  // German: built from the translation memory; a page appears only when fully translated.
+  const memory = existsSync(MEMORY) ? JSON.parse(await readFile(MEMORY, 'utf8')) : {}
+  const dePaths = new Set()
+  for (const en of enPages) {
+    const de = translatePage(en, memory)
+    if (!de) continue
+    de.id = id(de.path)
+    de.alternates = { en: en.path, ...(en.alternates.it && { it: en.alternates.it }), de: de.path }
+    const text = de.blocks.map((b) => (b.html ?? b.text ?? '').replace(/<[^>]+>/g, ' ')).join(' ')
+    de.words = text.split(/\s+/).filter(Boolean).length
+    await writeFile(join(OUT_PUBLIC, 'pages', `${de.id}.json`), JSON.stringify(de))
+    const { id: deId, path, lang, title, description, section, crumbs, image, words, translated } = de
+    index.push({ id: deId, path, lang, title, description: description.slice(0, 280), section, crumbs, image, words, translated })
+    dePaths.add(en.path)
+  }
+  // German programmes mirror the English ones whose pages are translated.
+  const deById = new Map(index.filter((e) => e.lang === 'de').map((e) => [e.path, e]))
+  for (const p of programmes.filter((p) => p.lang === 'en' && dePaths.has(p.path))) {
+    const de = deById.get(`/de${p.path.slice(3)}`)
+    deduped.push({
+      ...p,
+      id: de.id,
+      path: de.path,
+      lang: 'de',
+      title: de.title.replace(/^(Bachelor|Master)( of (Science|Arts))?( in)?\s+/i, ''),
+      fullTitle: de.title,
+      summary: de.description || p.summary,
+      translated: true,
+    })
+  }
+
   // Remove page files for pages that no longer exist.
   const live = new Set(index.map((e) => `${e.id}.json`))
   for (const f of await readdir(join(OUT_PUBLIC, 'pages'))) {
@@ -486,6 +519,7 @@ async function main() {
         pages: index.length,
         pagesEn: index.filter((p) => p.lang === 'en').length,
         pagesIt: index.filter((p) => p.lang === 'it').length,
+        pagesDe: index.filter((p) => p.lang === 'de').length,
         programmes: deduped.length,
         events: events.length,
         blocks: blockCount,
