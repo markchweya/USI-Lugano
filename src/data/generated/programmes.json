@@ -302,7 +302,9 @@
   "apply": "/formazione-iscrizione",
   "ects": null,
   "semesters": null,
-  "languages": []
+  "languages": [
+   "EN"
+  ]
  },
  {
   "id": "43d0eb2bfd53",
