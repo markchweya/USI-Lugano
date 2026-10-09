@@ -38,7 +38,7 @@
   line-height: 1.2;
   color: var(--ink-2);
 }
-@media (min-width: 1240px) {
+@media (min-width: 1480px) {
   .full {
     display: block;
   }

@@ -321,12 +321,26 @@ const levelCounts = computed(() => ({
   .actions {
     margin-left: 0;
   }
+  .kbd {
+    display: none;
+  }
+}
+/* Longer labels (German, Italian) need the full width before the extras appear. */
+@media (min-width: 1400px) {
   .search-btn {
-    min-width: 200px;
+    min-width: 190px;
   }
   .kbd {
     display: inline;
     margin-left: auto;
+  }
+}
+@media (min-width: 1080px) and (max-width: 1399px) {
+  .search-label {
+    display: none;
+  }
+  .nav-btn {
+    padding-inline: 0.65rem;
   }
 }
 
