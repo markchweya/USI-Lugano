@@ -1,0 +1,12 @@
+{{#if empty}}
+  <div class="empty">
+    <p class="empty__title">{{t "study.emptyTitle"}}</p>
+    <p>{{t "study.emptyHint"}}</p>
+    <p class="empty__actions">
+      <button type="button" class="button button--ghost js-reset">{{t "study.reset"}}</button>
+      <button type="button" class="button button--ghost js-search-open">{{icon "search" 18}} {{t "nav.search"}}</button>
+    </p>
+  </div>
+{{else}}
+  <div class="card-grid">{{#each programmes}}{{> programme-card}}{{/each}}</div>
+{{/if}}

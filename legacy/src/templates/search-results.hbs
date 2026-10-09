@@ -1,0 +1,22 @@
+{{#if empty}}
+  <div class="search__empty">
+    <p><strong>{{t "search.noResults" query}}</strong></p>
+    <p>{{t "search.noResultsHint"}}</p>
+  </div>
+{{else}}
+  {{#each groups}}
+    <div role="group" aria-labelledby="search-group-{{@index}}">
+      <p class="search__group" id="search-group-{{@index}}" role="presentation">{{label}}</p>
+      {{#each items}}
+        <a class="search__option js-option" id="search-option-{{index}}" role="option" aria-selected="false" href="{{href}}" data-index="{{index}}">
+          <span class="search__icon" aria-hidden="true">{{#if (eq kind "programmes")}}{{icon "cap" 18}}{{else}}{{#if (eq kind "goto")}}{{icon "compass" 18}}{{else}}{{icon "page" 18}}{{/if}}{{/if}}</span>
+          <span class="search__text">
+            <span class="search__title">{{title}}</span>
+            {{#if subtitle}}<span class="search__sub">{{subtitle}}</span>{{/if}}
+          </span>
+          {{icon "arrow" 16}}
+        </a>
+      {{/each}}
+    </div>
+  {{/each}}
+{{/if}}

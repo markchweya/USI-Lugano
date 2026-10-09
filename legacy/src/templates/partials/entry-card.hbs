@@ -1,0 +1,8 @@
+<li class="entry-card">
+  <a href="#{{path}}">
+    <span class="entry-card__crumbs">{{join crumbs " › "}}</span>
+    <span class="entry-card__title">{{title}}</span>
+    {{#if description}}<span class="entry-card__text">{{description}}</span>{{/if}}
+    {{#if untranslated}}<span class="chip chip--muted">{{t "programme.englishOnly"}}</span>{{/if}}
+  </a>
+</li>

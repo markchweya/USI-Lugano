@@ -1,0 +1,27 @@
+<header class="page-hero page-hero--colophon">
+  <p class="eyebrow">{{t "colophon.eyebrow"}}</p>
+  <h1 class="page-hero__title" tabindex="-1">{{t "colophon.headingA"}} <em>{{t "colophon.headingB"}}</em></h1>
+  <p class="page-hero__lede">{{t "colophon.lede"}}</p>
+</header>
+
+<ol class="stack">
+  {{#each stack}}
+    <li class="stack__item">
+      <span class="stack__mark" aria-hidden="true">{{mark}}</span>
+      <div class="stack__body">
+        <h2 class="stack__name">{{name}} <span class="stack__version">{{version}}</span></h2>
+        <p class="stack__era">{{era}}</p>
+        <dl>
+          <div><dt>{{t "colophon.role"}}</dt><dd>{{role}}</dd></div>
+          <div><dt>{{t "colophon.better"}}</dt><dd>{{better}}</dd></div>
+        </dl>
+      </div>
+      <span class="stack__n" aria-hidden="true">{{n}}/9</span>
+    </li>
+  {{/each}}
+</ol>
+
+<section class="principles" aria-labelledby="principles-title">
+  <h2 id="principles-title" class="section__title">{{t "colophon.principles"}}</h2>
+  <ul>{{#each principles}}<li>{{this}}</li>{{/each}}</ul>
+</section>
