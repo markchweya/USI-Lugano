@@ -22,6 +22,10 @@ describe('German terminology normalisation', () => {
     expect(normalize('Kontakt des Gleichstellungsdienstes')).toBe('Kontakt des Dienstes für Chancengleichheit')
   })
 
+  it('uses German names for generic public employers and places', () => {
+    expect(normalize('Collaboratore, Amministrazione federale, Berna')).toBe('Collaboratore, Bundesverwaltung, Bern')
+  })
+
   it('keeps names German speakers use in English', () => {
     expect(normalize('Der Career Service und der Alumni Service')).toBe('Der Career Service und der Alumni Service')
   })

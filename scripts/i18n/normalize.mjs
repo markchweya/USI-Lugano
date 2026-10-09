@@ -48,6 +48,14 @@ export const RULES = [
   [/\bDienststelle für /g, 'Dienst für '],
   [/\bDienststelle Qualitätssicherung/g, 'Dienst für Qualitätssicherung'],
 
+  // Generic public employers in career listings read in German; place names use German exonyms.
+  [/\bAmministrazione federale\b/g, 'Bundesverwaltung'],
+  [/\bAmministrazione cantonale\b/g, 'Kantonale Verwaltung'],
+  [/\bBerna\b/g, 'Bern'],
+  // One rendering for an unclear project title that appears in several batches.
+  [/Kundschaft: die Verbündete von Bally/g, 'Auftraggeber: «the Bally’s ally»'],
+  [/Auftraggeber: «the Bally's ally»/g, 'Auftraggeber: «the Bally’s ally»'],
+
   // Well-known quotations keep their established German wording (du-form).
   [/«Zweifeln Sie nie daran,/g, '«Zweifle nie daran,'],
 ]
