@@ -56,6 +56,11 @@ export const RULES = [
   [/Kundschaft: die Verbündete von Bally/g, 'Auftraggeber: «the Bally’s ally»'],
   [/Auftraggeber: «the Bally's ally»/g, 'Auftraggeber: «the Bally’s ally»'],
 
+  // Company names stay as the source spells them, even when a typo is suspected.
+  [/\bSecondo Mona\b/g, 'Secondo Monda'],
+  // Swiss quotation marks for quoted text (straight quotes arrive HTML-escaped).
+  [/&quot;([^&<>]{1,200}?)&quot;/g, '«$1»'],
+
   // Well-known quotations keep their established German wording (du-form).
   [/«Zweifeln Sie nie daran,/g, '«Zweifle nie daran,'],
 ]

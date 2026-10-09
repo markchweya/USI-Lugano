@@ -26,6 +26,10 @@ describe('German terminology normalisation', () => {
     expect(normalize('Collaboratore, Amministrazione federale, Berna')).toBe('Collaboratore, Bundesverwaltung, Bern')
   })
 
+  it('converts escaped straight quotes in text to Swiss guillemets', () => {
+    expect(normalize('<p>Projekt &quot;Blitz&quot; für Kunden</p>')).toBe('<p>Projekt «Blitz» für Kunden</p>')
+  })
+
   it('keeps names German speakers use in English', () => {
     expect(normalize('Der Career Service und der Alumni Service')).toBe('Der Career Service und der Alumni Service')
   })
