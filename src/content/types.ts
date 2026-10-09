@@ -1,6 +1,6 @@
 /** Shapes produced by scripts/usi/extract.mjs. */
 
-export type Lang = 'en' | 'it'
+export type Lang = 'en' | 'it' | 'de'
 
 export interface PageEntry {
   id: string
@@ -12,6 +12,10 @@ export interface PageEntry {
   crumbs: string[]
   image: string | null
   words: number
+  /** True for German pages, which are translations of the English original. */
+  translated?: boolean
+  /** German listing of a page that is still only available in English. */
+  untranslated?: boolean
 }
 
 export interface GalleryItem {
@@ -71,6 +75,9 @@ export interface Programme {
   ects: number | null
   semesters: number | null
   languages: ('EN' | 'IT')[]
+  translated?: boolean
+  /** German listing of a page that is still only available in English. */
+  untranslated?: boolean
 }
 
 export interface EventTeaser {

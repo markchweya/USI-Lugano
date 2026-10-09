@@ -1720,5 +1720,33 @@
   "org": "EU Open Data Days 2025",
   "date": null,
   "lang": "en"
+ },
+ {
+  "title": "IdEP Seminar, Nicola Pavoni - \"Macroeconomic Expectations and Limited Awareness\"",
+  "href": "/it/feeds/35819",
+  "org": "Facoltà di scienze economiche",
+  "date": null,
+  "lang": "it"
+ },
+ {
+  "title": "Miti e insidie dell'identità - Stefano Prandi",
+  "href": "/it/feeds/36226",
+  "org": "Facoltà di comunicazione, cultura e società",
+  "date": null,
+  "lang": "it"
+ },
+ {
+  "title": "Sessione informativa per programmi di scambio (MASTER COM+ECO)",
+  "href": "/it/feeds/36309",
+  "org": "",
+  "date": null,
+  "lang": "it"
+ },
+ {
+  "title": "Towards Practical Dynamic-Committee MPC: Availability, DoS Resistance, and the Cost of Getting There",
+  "href": "/it/feeds/36629",
+  "org": "Facoltà di scienze informatiche",
+  "date": null,
+  "lang": "it"
  }
 ]

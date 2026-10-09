@@ -59,9 +59,29 @@ export function normalizePath(path: string): string {
 }
 
 /** Links inside real content: internal pages we have become app routes, the rest go to usi.ch. */
-export function resolveHref(href: string): { internal: boolean; href: string } {
+export function resolveHref(href: string, locale?: string): { internal: boolean; href: string } {
   if (href.startsWith('/')) {
+    // On German pages, links into the English site point at the German translation when it exists.
+    if (locale === 'de' && href.startsWith('/en/')) {
+      const de = `/de${href.slice(3)}`
+      if (isKnownPath(de)) return { internal: true, href: de }
+    }
     return isKnownPath(href) ? { internal: true, href } : { internal: false, href: `https://www.usi.ch${href}` }
   }
   return { internal: false, href }
+}
+
+/**
+ * Pages to list for a locale. German is translated from English, so until a
+ * page has its German version, the English page is listed at its /de path
+ * (the content view shows it with an "untranslated" notice).
+ */
+export function entriesFor(all: PageEntry[], locale: string): PageEntry[] {
+  const own = all.filter((e) => e.lang === locale)
+  if (locale !== 'de') return own
+  const have = new Set(own.map((e) => e.path))
+  const pending = all
+    .filter((e) => e.lang === 'en' && !have.has(`/de${e.path.slice(3)}`))
+    .map((e) => ({ ...e, path: `/de${e.path.slice(3)}`, untranslated: true }))
+  return [...own, ...pending]
 }

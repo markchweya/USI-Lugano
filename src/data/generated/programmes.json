@@ -271,5 +271,55 @@
   "ects": null,
   "semesters": null,
   "languages": []
+ },
+ {
+  "id": "bff1c55f190b",
+  "path": "/it/formazione/bachelor/architettura",
+  "lang": "it",
+  "level": "bachelor",
+  "slug": "architettura",
+  "title": "Architettura",
+  "fullTitle": "Bachelor in Architettura",
+  "summary": "Studia Architettura all'Accademia di Mendrisio. Troverai professori importanti e un approccio innovativo. Iscriviti ora per diventare architetto.",
+  "faculty": "architecture",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-arc-1.jpg?itok=lcgNYapX",
+  "apply": "/formazione-iscrizione",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "d0aee3211147",
+  "path": "/it/formazione/bachelor/comunicazione",
+  "lang": "it",
+  "level": "bachelor",
+  "slug": "comunicazione",
+  "title": "Comunicazione",
+  "fullTitle": "Bachelor in Comunicazione",
+  "summary": "Studia comunicazione nell'università più internazionale della Svizzera. Scopri il nostro innovativo Bachelor (laurea triennale) in Comunicazione e iscriviti ora.",
+  "faculty": "communication",
+  "image": null,
+  "apply": "/formazione-iscrizione",
+  "ects": null,
+  "semesters": null,
+  "languages": []
+ },
+ {
+  "id": "43d0eb2bfd53",
+  "path": "/it/formazione/bachelor/economia",
+  "lang": "it",
+  "level": "bachelor",
+  "slug": "economia",
+  "title": "Scienze economiche",
+  "fullTitle": "Bachelor in Scienze economiche",
+  "summary": "Il Bachelor in Economia (laurea triennale) offre ai suoi studenti un background molto solido e 4 aree di specializzazione: finanza, management, economia politica e metodi quantitativi.",
+  "faculty": "economics",
+  "image": "https://www.usi.ch/sites/default/files/styles/usi_large/public/storage/images/orientamento-bachelor-eco-1.jpg?itok=Wx8imYVW",
+  "apply": "/formazione-iscrizione",
+  "ects": null,
+  "semesters": null,
+  "languages": [
+   "EN"
+  ]
  }
 ]

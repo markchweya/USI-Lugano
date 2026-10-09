@@ -463,9 +463,8 @@ async function main() {
     })
   }
 
-  // Prefer English programme entries; keep Italian ones that have no English twin.
-  const enPaths = new Set(programmes.filter((p) => p.lang === 'en').map((p) => p.path))
-  const deduped = programmes.filter((p) => p.lang === 'en' || !(p.alternates.en && enPaths.has(p.alternates.en)))
+  // Every language keeps its own programme list; the UI shows the one for the current locale.
+  const deduped = programmes
   deduped.forEach((p) => delete p.alternates)
 
   // Remove page files for pages that no longer exist.
