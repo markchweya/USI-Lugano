@@ -1,24 +1,28 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from 'vue'
-import { loadIndex } from '@/content/api'
-import { sections } from '@/content/nav'
+import { entriesFor, loadIndex } from '@/content/api'
+import { sectionKeys, sectionOf } from '@/content/nav'
 import type { PageEntry } from '@/content/types'
 import { search } from '@/lib/search'
 import { useQueryState } from '@/composables/useQueryState'
+import { useI18n } from '@/i18n'
 import PageCard from '@/components/PageCard.vue'
 import UiIcon from '@/components/ui/UiIcon.vue'
 
 const PAGE_SIZE = 48
 
-const entries = shallowRef<PageEntry[]>([])
+const { locale, m, n } = useI18n()
+const all = shallowRef<PageEntry[]>([])
 const failed = ref(false)
 loadIndex()
-  .then((e) => (entries.value = e))
+  .then((e) => (all.value = e))
   .catch(() => (failed.value = true))
+
+/** Pages in the current language only. */
+const entries = computed(() => entriesFor(all.value, locale.value))
 
 const section = useQueryState('section')
 const q = useQueryState('q')
-const lang = useQueryState('lang')
 const qInput = ref(q.value)
 let t: number | undefined
 watch(qInput, (v) => {
@@ -27,18 +31,16 @@ watch(qInput, (v) => {
 })
 
 const limit = ref(PAGE_SIZE)
-watch([section, q, lang], () => (limit.value = PAGE_SIZE))
-
-const sectionOf = (e: PageEntry) => sections.find((s) => e.path.startsWith(`${s.root}/`) || e.path === s.root)?.key ?? 'other'
+watch([section, q, locale], () => (limit.value = PAGE_SIZE))
 
 const tabs = computed(() => [
-  { key: '', label: 'Everything', count: entries.value.length },
-  ...sections.map((s) => ({ key: s.key, label: s.label, count: entries.value.filter((e) => sectionOf(e) === s.key).length })),
-  { key: 'other', label: 'Other', count: entries.value.filter((e) => sectionOf(e) === 'other').length },
-])
+  { key: '', label: m.value.explore.everything, count: entries.value.length },
+  ...sectionKeys.map((k) => ({ key: k, label: m.value.sections[k].label, count: entries.value.filter((e) => sectionOf(e.path) === k).length })),
+  { key: 'other', label: m.value.sections.other.label, count: entries.value.filter((e) => sectionOf(e.path) === 'other').length },
+].filter((tab) => tab.key === '' || tab.count > 0))
 
 const filtered = computed(() => {
-  let list = entries.value.filter((e) => (!section.value || sectionOf(e) === section.value) && (!lang.value || e.lang === lang.value))
+  let list = entries.value.filter((e) => !section.value || sectionOf(e.path) === section.value)
   if (q.value) {
     const ranked = search(
       list.map((e) => ({ id: e.id, title: e.title, subtitle: e.crumbs.join(' '), group: '', to: e.path, keywords: e.description })),
@@ -52,29 +54,26 @@ const filtered = computed(() => {
 })
 const visible = computed(() => filtered.value.slice(0, limit.value))
 
-const totalWords = computed(() => entries.value.reduce((n, e) => n + e.words, 0))
+const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.words, 0) / 1000)))
 </script>
 
 <template>
   <div class="explore">
     <header class="container head">
-      <p class="eyebrow">Explore</p>
+      <p class="eyebrow">{{ m.explore.eyebrow }}</p>
       <h1 class="title">
-        <span class="num">{{ entries.length ? entries.length.toLocaleString('en') : '…' }}</span> real pages,
-        <span class="serif-accent">one calm interface.</span>
+        <span class="num">{{ m.explore.headingA(entries.length ? n(entries.length) : '…') }}</span>
+        <span class="serif-accent">{{ m.explore.headingB }}</span>
       </h1>
-      <p class="lede">
-        Every public page we mirrored from usi.ch, about {{ Math.round(totalWords / 1000).toLocaleString('en') }}k words, organised and searchable. Pick a
-        topic or start typing.
-      </p>
+      <p class="lede">{{ m.explore.lede(kWords) }}</p>
     </header>
 
     <div class="container controls">
       <div class="search">
         <UiIcon name="search" :size="18" />
-        <input v-model="qInput" type="search" placeholder="Filter pages — housing, scholarships, regulations…" aria-label="Filter pages" />
+        <input v-model="qInput" type="search" :placeholder="m.explore.placeholder" :aria-label="m.explore.filter" />
       </div>
-      <div class="tabs" role="tablist" aria-label="Sections">
+      <div class="tabs" role="tablist" :aria-label="m.explore.sections">
         <button
           v-for="tab in tabs"
           :key="tab.key"
@@ -87,26 +86,22 @@ const totalWords = computed(() => entries.value.reduce((n, e) => n + e.words, 0)
           {{ tab.label }} <span class="count">{{ tab.count }}</span>
         </button>
       </div>
-      <div class="langs" role="group" aria-label="Language">
-        <button type="button" class="tab" :aria-pressed="!lang" @click="lang = ''">All languages</button>
-        <button type="button" class="tab" :aria-pressed="lang === 'en'" @click="lang = 'en'">English</button>
-        <button type="button" class="tab" :aria-pressed="lang === 'it'" @click="lang = 'it'">Italiano</button>
-      </div>
+
     </div>
 
     <section class="container" aria-live="polite">
-      <p v-if="failed" class="empty">The page index couldn’t be loaded. Please refresh.</p>
+      <p v-if="failed" class="empty">{{ m.explore.failed }}</p>
       <template v-else>
-        <p class="result-count">{{ filtered.length.toLocaleString('en') }} pages</p>
+        <p class="result-count">{{ m.explore.count(n(filtered.length)) }}</p>
         <div class="grid">
           <PageCard v-for="e in visible" :key="e.id" :entry="e" show-section />
         </div>
         <div v-if="filtered.length > limit" class="more">
           <button type="button" class="btn btn--ghost" @click="limit += PAGE_SIZE">
-            Show more <span class="count">({{ (filtered.length - limit).toLocaleString('en') }} left)</span>
+            {{ m.explore.more }} <span class="count">{{ m.explore.left(n(filtered.length - limit)) }}</span>
           </button>
         </div>
-        <p v-if="entries.length && !filtered.length" class="empty">No pages match. Try a broader term.</p>
+        <p v-if="entries.length && !filtered.length" class="empty">{{ m.explore.empty }}</p>
       </template>
     </section>
   </div>
@@ -164,8 +159,7 @@ const totalWords = computed(() => entries.value.reduce((n, e) => n + e.words, 0)
   color: var(--ink);
   font-size: 1.05rem;
 }
-.tabs,
-.langs {
+.tabs {
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
@@ -188,10 +182,6 @@ const totalWords = computed(() => entries.value.reduce((n, e) => n + e.words, 0)
   background: var(--ink);
   border-color: var(--ink);
   color: var(--paper);
-}
-.langs .tab {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.75rem;
 }
 .count {
   font-family: var(--font-mono);

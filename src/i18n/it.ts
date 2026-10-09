@@ -224,6 +224,7 @@ const it: Messages = {
     related: 'Pagine correlate',
     translatedNotice: '',
     translatedFrom: '',
+    notTranslated: '',
     playVideo: 'Guarda il video',
     media: 'Contenuti multimediali',
     previous: 'Precedente',

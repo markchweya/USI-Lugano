@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { findEntry, loadIndex, loadPage, normalizePath } from '@/content/api'
 import type { Page, PageEntry } from '@/content/types'
-import { programmes, levelLabels, formatDuration } from '@/data/programmes'
-import { getFaculty } from '@/data/faculties'
+import { findProgramme, useDuration } from '@/data/programmes'
+import { useFaculties } from '@/data/faculties'
 import { usePageTitle } from '@/composables/usePageTitle'
 import { useCommandPalette } from '@/composables/useCommandPalette'
+import { setAlternates } from '@/composables/useAlternates'
+import { useI18n, type Locale } from '@/i18n'
 import { slugify } from '@/lib/slugify'
 import BlockRenderer from '@/components/content/BlockRenderer.vue'
 import SmartLink from '@/components/ui/SmartLink.vue'
@@ -15,27 +17,41 @@ import PageCard from '@/components/PageCard.vue'
 
 const route = useRoute()
 const palette = useCommandPalette()
+const { m, d } = useI18n()
+const faculties = useFaculties()
+const duration = useDuration()
 
 const page = shallowRef<Page | null>(null)
 const index = shallowRef<PageEntry[]>([])
 const state = ref<'loading' | 'ready' | 'missing' | 'error'>('loading')
+/** German page not translated yet: we show the English original with a notice. */
+const fallback = ref(false)
 
 const path = computed(() => normalizePath(route.path))
+const toDe = (enPath: string) => `/de${enPath.slice(3)}`
 
 watch(
   path,
   async (p) => {
     state.value = 'loading'
     page.value = null
+    fallback.value = false
     try {
       const [entry, all] = await Promise.all([findEntry(p), loadIndex()])
       index.value = all
-      if (!entry) {
+      let target = entry
+      if (!target && p.startsWith('/de/')) {
+        target = await findEntry(`/en${p.slice(3)}`)
+        fallback.value = !!target
+      }
+      if (!target) {
         state.value = 'missing'
+        setAlternates({})
         return
       }
-      page.value = await loadPage(entry.id)
+      page.value = await loadPage(target.id)
       state.value = 'ready'
+      setAlternates(alternatesOf(page.value, p))
     } catch {
       state.value = 'error'
     }
@@ -43,10 +59,24 @@ watch(
   { immediate: true },
 )
 
-usePageTitle(() => (state.value === 'ready' ? page.value?.title : state.value === 'missing' ? 'Page not found' : undefined))
+onBeforeUnmount(() => setAlternates({}))
 
-const programme = computed(() => programmes.find((p) => p.path === path.value))
-const faculty = computed(() => getFaculty(programme.value?.faculty))
+/** Where this page lives in each language. German mirrors the English path. */
+function alternatesOf(pg: Page, current: string): Partial<Record<Locale, string>> {
+  const en = pg.lang === 'en' ? pg.path : pg.alternates.en
+  return {
+    en,
+    it: pg.alternates.it ?? (pg.lang === 'it' ? pg.path : undefined),
+    de: current.startsWith('/de/') ? current : en ? toDe(en) : undefined,
+  }
+}
+
+usePageTitle(() => (state.value === 'ready' ? page.value?.title : state.value === 'missing' ? m.value.notFound.title : undefined))
+
+const programme = computed(() => findProgramme(path.value) ?? (page.value ? findProgramme(page.value.path) : undefined))
+const faculty = computed(() => faculties.get(programme.value?.faculty))
+const isTranslation = computed(() => !!page.value?.translated)
+const originalPath = computed(() => (path.value.startsWith('/de/') ? `/en${path.value.slice(3)}` : null))
 
 const toc = computed(() => (page.value?.blocks ?? []).filter((b) => b.t === 'h' && b.level === 2).map((b) => (b.t === 'h' ? b.text : '')))
 
@@ -58,42 +88,39 @@ const heroBlocks = computed(() => {
 const bodyBlocks = computed(() => page.value?.blocks.slice(heroBlocks.value.length) ?? [])
 
 const depth = (p: string) => p.split('/').length
+/** Children/siblings are looked up in the language actually shown. */
+const basePath = computed(() => (fallback.value && page.value ? page.value.path : path.value))
 const childPages = computed(() =>
-  index.value.filter((e) => e.path.startsWith(`${path.value}/`) && depth(e.path) === depth(path.value) + 1).sort((a, b) => a.title.localeCompare(b.title)),
+  index.value
+    .filter((e) => e.path.startsWith(`${basePath.value}/`) && depth(e.path) === depth(basePath.value) + 1)
+    .sort((a, b) => a.title.localeCompare(b.title)),
 )
 const siblingPages = computed(() => {
-  const parent = path.value.split('/').slice(0, -1).join('/')
+  const parent = basePath.value.split('/').slice(0, -1).join('/')
   if (depth(parent) < 3) return []
-  return index.value.filter((e) => e.path !== path.value && e.path.startsWith(`${parent}/`) && depth(e.path) === depth(path.value)).slice(0, 6)
+  return index.value.filter((e) => e.path !== basePath.value && e.path.startsWith(`${parent}/`) && depth(e.path) === depth(basePath.value)).slice(0, 6)
 })
 
 const facts = computed(() => {
   const p = programme.value
   if (!p) return []
+  const lang = (l: 'EN' | 'IT') => (l === 'EN' ? m.value.programme.english : m.value.programme.italian)
   return [
-    { k: 'Level', v: levelLabels[p.level] },
-    { k: 'Faculty', v: faculty.value?.short },
-    { k: 'Credits', v: p.ects ? `${p.ects} ECTS` : null },
-    { k: 'Duration', v: formatDuration(p) },
-    { k: 'Language', v: p.languages.length ? p.languages.map((l) => (l === 'EN' ? 'English' : 'Italian')).join(' & ') : null },
+    { k: m.value.programme.level, v: m.value.levels[p.level] },
+    { k: m.value.programme.faculty, v: faculty.value?.short },
+    { k: m.value.programme.credits, v: p.ects ? `${p.ects} ECTS` : null },
+    { k: m.value.programme.duration, v: duration(p) },
+    { k: m.value.programme.language, v: p.languages.length ? p.languages.map(lang).join(` ${m.value.programme.and} `) : null },
   ].filter((f) => f.v)
 })
 
-const otherLang = computed(() => {
-  const p = page.value
-  if (!p) return null
-  const target = p.lang === 'en' ? 'it' : 'en'
-  const href = p.alternates[target]
-  return href && href !== p.path ? { href, label: target === 'en' ? 'English' : 'Italiano' } : null
-})
-
-const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''))
+const updated = computed(() => (page.value ? d(page.value.fetchedAt, { day: 'numeric', month: 'short', year: 'numeric' }) : ''))
 </script>
 
 <template>
   <div class="page" :style="faculty ? { '--accent': faculty.color } : undefined">
     <!-- Loading skeleton -->
-    <div v-if="state === 'loading'" class="container skeleton" aria-busy="true" aria-label="Loading page">
+    <div v-if="state === 'loading'" class="container skeleton" aria-busy="true" :aria-label="m.page.loading">
       <div class="sk sk-crumb" />
       <div class="sk sk-title" />
       <div class="sk sk-line" />
@@ -103,18 +130,18 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
 
     <!-- Not in our corpus -->
     <div v-else-if="state === 'missing' || state === 'error'" class="container missing">
-      <p class="eyebrow">{{ state === 'error' ? 'Connection problem' : 'Not mirrored yet' }}</p>
-      <h1>{{ state === 'error' ? 'We couldn’t load this page.' : 'This page isn’t part of the redesign yet.' }}</h1>
-      <p class="lede">It may still exist on the current USI website.</p>
+      <p class="eyebrow">{{ state === 'error' ? m.page.connection : m.page.notMirrored }}</p>
+      <h1>{{ state === 'error' ? m.page.errorTitle : m.page.missingTitle }}</h1>
+      <p class="lede">{{ m.page.missingLede }}</p>
       <div class="missing-actions">
-        <a :href="`https://www.usi.ch${path}`" class="btn" target="_blank" rel="noopener">Open on usi.ch <UiIcon name="arrow-up-right" :size="16" /></a>
-        <button type="button" class="btn btn--ghost" @click="palette.open()"><UiIcon name="search" :size="16" /> Search instead</button>
+        <a :href="`https://www.usi.ch${originalPath ?? path}`" class="btn" target="_blank" rel="noopener">{{ m.page.openOriginal }} <UiIcon name="arrow-up-right" :size="16" /></a>
+        <button type="button" class="btn btn--ghost" @click="palette.open()"><UiIcon name="search" :size="16" /> {{ m.page.searchInstead }}</button>
       </div>
     </div>
 
     <article v-else-if="page">
       <header class="hero container">
-        <nav class="crumbs" aria-label="Breadcrumb">
+        <nav class="crumbs" :aria-label="m.page.breadcrumb">
           <ol role="list">
             <li v-for="(c, i) in page.breadcrumb" :key="i">
               <SmartLink v-if="c.path && i < page.breadcrumb.length - 1" :href="c.path">{{ c.label }}</SmartLink>
@@ -125,7 +152,7 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
 
         <div class="hero-grid">
           <div>
-            <p v-if="programme" class="eyebrow accent">{{ levelLabels[programme.level] }} programme</p>
+            <p v-if="programme" class="eyebrow accent">{{ m.programme.kind(m.levels[programme.level]) }}</p>
             <p v-else class="eyebrow">{{ page.section }}</p>
             <h1 class="title">{{ page.title }}</h1>
             <p v-if="page.description" class="lede">{{ page.description }}</p>
@@ -135,12 +162,19 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
               {{ c.label }} <UiIcon name="arrow-right" :size="16" />
             </SmartLink>
             <div class="meta-row">
-              <RouterLink v-if="otherLang" :to="otherLang.href" class="chip"><UiIcon name="language" :size="14" /> {{ otherLang.label }}</RouterLink>
-              <span v-if="page.lang === 'it'" class="chip chip--solid">In Italian</span>
-              <a :href="page.source" class="chip" target="_blank" rel="noopener">Original <UiIcon name="arrow-up-right" :size="12" /></a>
+              <span v-if="isTranslation" class="chip chip--solid"><UiIcon name="language" :size="14" /> {{ m.programme.translated }}</span>
+              <a :href="page.source" class="chip" target="_blank" rel="noopener">{{ m.page.original }} <UiIcon name="arrow-up-right" :size="12" /></a>
             </div>
           </div>
         </div>
+
+        <aside v-if="isTranslation || fallback" class="notice" role="note">
+          <UiIcon name="language" :size="18" />
+          <p>
+            {{ fallback ? m.page.notTranslated : m.page.translatedNotice }}
+            <RouterLink v-if="isTranslation && originalPath" :to="originalPath" lang="en">{{ m.page.translatedFrom }}</RouterLink>
+          </p>
+        </aside>
 
         <dl v-if="facts.length" class="facts">
           <div v-for="f in facts" :key="f.k">
@@ -157,10 +191,10 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
       <div class="container body">
         <div class="main-col">
           <BlockRenderer v-if="bodyBlocks.length" :blocks="bodyBlocks" />
-          <p v-else-if="!childPages.length" class="lede">This page is mostly a directory on the original site — see the links alongside.</p>
+          <p v-else-if="!childPages.length" class="lede">{{ m.page.directory }}</p>
 
           <section v-if="childPages.length" class="children" aria-labelledby="in-section">
-            <h2 id="in-section" class="sub-title">In this section</h2>
+            <h2 id="in-section" class="sub-title">{{ m.page.inSection }}</h2>
             <div class="grid">
               <PageCard v-for="c in childPages" :key="c.id" :entry="c" />
             </div>
@@ -169,35 +203,35 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
 
         <aside class="side">
           <div class="sticky">
-            <nav v-if="toc.length > 1" class="side-block" aria-label="On this page">
-              <p class="side-title">On this page</p>
+            <nav v-if="toc.length > 1" class="side-block" :aria-label="m.page.onThisPage">
+              <p class="side-title">{{ m.page.onThisPage }}</p>
               <ul role="list">
                 <li v-for="t in toc" :key="t"><a :href="`#${slugify(t)}`">{{ t }}</a></li>
               </ul>
             </nav>
-            <nav v-if="page.nav.length" class="side-block" aria-label="Section">
-              <p class="side-title">In this programme</p>
+            <nav v-if="page.nav.length" class="side-block" :aria-label="m.page.inProgramme">
+              <p class="side-title">{{ m.page.inProgramme }}</p>
               <ul role="list">
                 <li v-for="n in page.nav" :key="n.href">
-                  <SmartLink :href="n.href" :class="{ current: n.href === page.path }">{{ n.label }}</SmartLink>
+                  <SmartLink :href="n.href" :class="{ current: n.href === page.path || n.href === path }">{{ n.label }}</SmartLink>
                 </li>
               </ul>
             </nav>
-            <nav v-if="page.links.length" class="side-block" aria-label="Quick links">
-              <p class="side-title">Quick links</p>
+            <nav v-if="page.links.length" class="side-block" :aria-label="m.page.quickLinks">
+              <p class="side-title">{{ m.page.quickLinks }}</p>
               <ul role="list">
                 <li v-for="l in page.links" :key="l.href">
                   <SmartLink :href="l.href">{{ l.label }} <UiIcon name="arrow-up-right" :size="12" /></SmartLink>
                 </li>
               </ul>
             </nav>
-            <p class="synced">Synced from usi.ch · {{ updated }}</p>
+            <p class="synced">{{ m.page.synced(updated) }}</p>
           </div>
         </aside>
       </div>
 
       <section v-if="siblingPages.length" class="container related" aria-labelledby="related">
-        <h2 id="related" class="sub-title">Related pages</h2>
+        <h2 id="related" class="sub-title">{{ m.page.related }}</h2>
         <div class="grid">
           <PageCard v-for="s in siblingPages" :key="s.id" :entry="s" />
         </div>
@@ -305,6 +339,28 @@ const updated = computed(() => (page.value ? new Date(page.value.fetchedAt).toLo
   margin: 0.3rem 0 0;
   font-family: var(--font-display);
   font-size: var(--step-1);
+}
+.notice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--lake);
+  border-radius: var(--radius-sm);
+  background: var(--lake-soft);
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+.notice .icon {
+  margin-top: 0.15rem;
+  color: var(--lake);
+}
+.notice a {
+  margin-left: 0.25rem;
+  color: var(--ink);
+  font-weight: 600;
 }
 .hero-media {
   margin-top: clamp(2rem, 4vw, 3rem);

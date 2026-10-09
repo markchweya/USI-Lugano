@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { useCommandPalette } from '@/composables/useCommandPalette'
 import UiIcon from '@/components/ui/UiIcon.vue'
+import { useI18n } from '@/i18n'
 
 const palette = useCommandPalette()
+const { m, path } = useI18n()
 </script>
 
 <template>
   <section class="container nf">
     <p class="code" aria-hidden="true">404</p>
-    <h1>This path leads into the lake.</h1>
-    <p class="lede">The page you’re looking for doesn’t exist here. Search for it, or head back to dry land.</p>
+    <h1>{{ m.notFound.heading }}</h1>
+    <p class="lede">{{ m.notFound.lede }}</p>
     <div class="actions">
-      <button type="button" class="btn btn--signal" @click="palette.open()"><UiIcon name="search" :size="16" /> Search</button>
-      <RouterLink to="/" class="btn btn--ghost">Back home</RouterLink>
+      <button type="button" class="btn btn--signal" @click="palette.open()"><UiIcon name="search" :size="16" /> {{ m.notFound.search }}</button>
+      <RouterLink :to="path('home')" class="btn btn--ghost">{{ m.notFound.home }}</RouterLink>
     </div>
   </section>
 </template>

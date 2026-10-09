@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { programmes, levelLabels } from '@/data/programmes'
-import { faculties } from '@/data/faculties'
+import { levelOrder, useProgrammes } from '@/data/programmes'
+import { useFaculties } from '@/data/faculties'
+import { useI18n } from '@/i18n'
 import { search } from '@/lib/search'
 import { useQueryState } from '@/composables/useQueryState'
 import ProgrammeCard from '@/components/ProgrammeCard.vue'
 import UiIcon from '@/components/ui/UiIcon.vue'
-import type { Level } from '@/content/types'
+
+const { m } = useI18n()
+const programmes = useProgrammes()
+const facultyNames = useFaculties()
 
 const level = useQueryState('level')
 const faculty = useQueryState('faculty')
@@ -26,16 +30,19 @@ watch(q, (v) => {
 })
 
 const levels = computed(() =>
-  (Object.keys(levelLabels) as Level[])
-    .map((l) => ({ id: l, label: levelLabels[l], count: programmes.filter((p) => p.level === l).length }))
+  levelOrder
+    .map((l) => ({ id: l, label: m.value.levels[l], count: programmes.value.filter((p) => p.level === l).length }))
     .filter((l) => l.count > 0),
 )
 const facultyOptions = computed(() =>
-  faculties.map((f) => ({ ...f, count: programmes.filter((p) => p.faculty === f.slug).length })).filter((f) => f.count > 0),
+  facultyNames
+    .list()
+    .map((f) => ({ ...f, count: programmes.value.filter((p) => p.faculty === f.slug).length }))
+    .filter((f) => f.count > 0),
 )
 
 const filtered = computed(() => {
-  let list = programmes.filter(
+  let list = programmes.value.filter(
     (p) => (!level.value || p.level === level.value) && (!faculty.value || p.faculty === faculty.value) && (!lang.value || p.languages.includes(lang.value as 'EN' | 'IT')),
   )
   if (q.value) {
@@ -65,29 +72,29 @@ const filtersOpen = ref(false)
 <template>
   <div class="study">
     <header class="container head">
-      <p class="eyebrow">Programme finder</p>
-      <h1 class="title">Find the programme <span class="serif-accent">that fits you.</span></h1>
-      <p class="lede">Every Bachelor and Master currently published on usi.ch, in one place. Filter by level, faculty or teaching language — your selection lives in the URL, so you can share it.</p>
+      <p class="eyebrow">{{ m.study.eyebrow }}</p>
+      <h1 class="title">{{ m.study.headingA }} <span class="serif-accent">{{ m.study.headingB }}</span></h1>
+      <p class="lede">{{ m.study.lede }}</p>
     </header>
 
     <div class="container layout">
       <button type="button" class="btn btn--ghost filters-toggle" :aria-expanded="filtersOpen" aria-controls="filters" @click="filtersOpen = !filtersOpen">
-        <UiIcon name="filter" :size="16" /> Filters<span v-if="activeCount"> ({{ activeCount }})</span>
+        <UiIcon name="filter" :size="16" /> {{ m.study.filters }}<span v-if="activeCount"> ({{ activeCount }})</span>
       </button>
 
-      <aside id="filters" class="filters" :class="{ open: filtersOpen }" aria-label="Filters">
+      <aside id="filters" class="filters" :class="{ open: filtersOpen }" :aria-label="m.study.filters">
         <div class="field">
-          <label for="q" class="label">Search</label>
+          <label for="q" class="label">{{ m.study.search }}</label>
           <div class="search">
             <UiIcon name="search" :size="16" />
-            <input id="q" v-model="qInput" type="search" placeholder="e.g. finance, AI" autocomplete="off" />
+            <input id="q" v-model="qInput" type="search" :placeholder="m.study.searchPlaceholder" autocomplete="off" />
           </div>
         </div>
 
         <fieldset class="field">
-          <legend class="label">Level</legend>
+          <legend class="label">{{ m.study.level }}</legend>
           <div class="chips">
-            <button type="button" class="pill" :aria-pressed="!level" @click="level = ''">All</button>
+            <button type="button" class="pill" :aria-pressed="!level" @click="level = ''">{{ m.study.all }}</button>
             <button v-for="l in levels" :key="l.id" type="button" class="pill" :aria-pressed="level === l.id" @click="level = level === l.id ? '' : l.id">
               {{ l.label }} <span class="count">{{ l.count }}</span>
             </button>
@@ -95,11 +102,11 @@ const filtersOpen = ref(false)
         </fieldset>
 
         <fieldset class="field">
-          <legend class="label">Faculty</legend>
+          <legend class="label">{{ m.study.faculty }}</legend>
           <div class="radios">
             <label class="radio">
               <input v-model="faculty" type="radio" name="faculty" value="" />
-              <span>All faculties</span>
+              <span>{{ m.study.allFaculties }}</span>
             </label>
             <label v-for="f in facultyOptions" :key="f.slug" class="radio" :style="{ '--fac': f.color }">
               <input v-model="faculty" type="radio" name="faculty" :value="f.slug" />
@@ -110,25 +117,25 @@ const filtersOpen = ref(false)
         </fieldset>
 
         <fieldset class="field">
-          <legend class="label">Taught in</legend>
+          <legend class="label">{{ m.study.taughtIn }}</legend>
           <div class="chips">
-            <button type="button" class="pill" :aria-pressed="!lang" @click="lang = ''">Any</button>
-            <button type="button" class="pill" :aria-pressed="lang === 'EN'" @click="lang = lang === 'EN' ? '' : 'EN'">English</button>
-            <button type="button" class="pill" :aria-pressed="lang === 'IT'" @click="lang = lang === 'IT' ? '' : 'IT'">Italian</button>
+            <button type="button" class="pill" :aria-pressed="!lang" @click="lang = ''">{{ m.study.any }}</button>
+            <button type="button" class="pill" :aria-pressed="lang === 'EN'" @click="lang = lang === 'EN' ? '' : 'EN'">{{ m.study.english }}</button>
+            <button type="button" class="pill" :aria-pressed="lang === 'IT'" @click="lang = lang === 'IT' ? '' : 'IT'">{{ m.study.italian }}</button>
           </div>
         </fieldset>
 
-        <button v-if="activeCount" type="button" class="reset" @click="reset">Clear all filters</button>
+        <button v-if="activeCount" type="button" class="reset" @click="reset">{{ m.study.clear }}</button>
       </aside>
 
       <section class="results" aria-live="polite">
         <div class="toolbar">
           <p class="result-count">
-            <strong>{{ filtered.length }}</strong> {{ filtered.length === 1 ? 'programme' : 'programmes' }}
+            <strong>{{ filtered.length }}</strong> {{ m.study.count(filtered.length) }}
           </p>
-          <div class="view-switch" role="group" aria-label="Layout">
-            <button type="button" :aria-pressed="view === 'grid'" @click="view = 'grid'"><UiIcon name="grid" :size="16" label="Grid view" /></button>
-            <button type="button" :aria-pressed="view === 'list'" @click="view = 'list'"><UiIcon name="list" :size="16" label="List view" /></button>
+          <div class="view-switch" role="group" :aria-label="m.study.layout">
+            <button type="button" :aria-pressed="view === 'grid'" @click="view = 'grid'"><UiIcon name="grid" :size="16" :label="m.study.grid" /></button>
+            <button type="button" :aria-pressed="view === 'list'" @click="view = 'list'"><UiIcon name="list" :size="16" :label="m.study.list" /></button>
           </div>
         </div>
 
@@ -137,9 +144,9 @@ const filtersOpen = ref(false)
         </TransitionGroup>
 
         <div v-else class="empty">
-          <p class="empty-title">Nothing matches those filters.</p>
-          <p>Try removing one, or search the whole site with <kbd>/</kbd>.</p>
-          <button type="button" class="btn btn--ghost btn--sm" @click="reset">Reset filters</button>
+          <p class="empty-title">{{ m.study.emptyTitle }}</p>
+          <p>{{ m.study.emptyHint }} <kbd>/</kbd>.</p>
+          <button type="button" class="btn btn--ghost btn--sm" @click="reset">{{ m.study.reset }}</button>
         </div>
       </section>
     </div>

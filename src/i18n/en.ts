@@ -226,6 +226,7 @@ const en = {
     related: 'Related pages',
     translatedNotice: '',
     translatedFrom: '',
+    notTranslated: '',
     playVideo: 'Play video',
     media: 'Media',
     previous: 'Previous',

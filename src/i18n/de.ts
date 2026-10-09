@@ -227,6 +227,7 @@ const de: Messages = {
     related: 'Verwandte Seiten',
     translatedNotice: 'Die USI veröffentlicht diese Seite auf Englisch und Italienisch. Diese deutsche Fassung ist eine Übersetzung – massgebend ist das Original.',
     translatedFrom: 'Englisches Original lesen',
+    notTranslated: 'Diese Seite ist noch nicht übersetzt. Hier lesen Sie vorerst das englische Original.',
     playVideo: 'Video abspielen',
     media: 'Medien',
     previous: 'Zurück',

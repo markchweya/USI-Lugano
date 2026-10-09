@@ -30,7 +30,7 @@ describe('dictionaries', () => {
   const leaves = (obj: object, prefix = ''): [string, unknown][] =>
     Object.entries(obj).flatMap(([k, v]) => (v && typeof v === 'object' ? leaves(v, `${prefix}${k}.`) : [[`${prefix}${k}`, v]]))
 
-  const optionalBlank = new Set(['sections.other.blurb', 'page.translatedNotice', 'page.translatedFrom'])
+  const optionalBlank = new Set(['sections.other.blurb', 'page.translatedNotice', 'page.translatedFrom', 'page.notTranslated'])
 
   it('has the same keys in every language', () => {
     const keys = (l: (typeof locales)[number]) => leaves(messages[l]).map(([k]) => k).sort()

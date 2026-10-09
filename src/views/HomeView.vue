@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { findEntry, loadPage } from '@/content/api'
-import type { Card } from '@/content/types'
+import type { Card, EventTeaser, Level } from '@/content/types'
 import { useSiteNav } from '@/content/nav'
-import { programmes, levelLabels } from '@/data/programmes'
-import { faculties } from '@/data/faculties'
-import { keyFacts, motto, portraitPath } from '@/data/facts'
+import { levelOrder, useProgrammes } from '@/data/programmes'
+import { useFaculties } from '@/data/faculties'
+import { campusPath, keyFacts, portraitPath } from '@/data/facts'
 import events from '@/data/generated/events.json'
 import stats from '@/data/generated/stats.json'
 import { useCommandPalette } from '@/composables/useCommandPalette'
+import { useI18n } from '@/i18n'
 import LakeScene from '@/components/home/LakeScene.vue'
 import ProgrammeCard from '@/components/ProgrammeCard.vue'
 import FacultyArt from '@/components/ui/FacultyArt.vue'
@@ -17,43 +18,61 @@ import SectionHeading from '@/components/ui/SectionHeading.vue'
 import SmartLink from '@/components/ui/SmartLink.vue'
 import CountUp from '@/components/ui/CountUp.vue'
 import UiIcon from '@/components/ui/UiIcon.vue'
-import type { EventTeaser, Level } from '@/content/types'
 
 const router = useRouter()
 const palette = useCommandPalette()
-const { sections, children } = useSiteNav()
+const { locale, m, n, path } = useI18n()
+const { sections, children, entries } = useSiteNav()
+const programmes = useProgrammes()
+const facultyNames = useFaculties()
 
 /* Intent builder */
 const intentLevel = ref<Level | ''>('')
 const intentFaculty = ref('')
-const levels = (Object.keys(levelLabels) as Level[]).filter((l) => programmes.some((p) => p.level === l))
+const levels = computed(() => levelOrder.filter((l) => programmes.value.some((p) => p.level === l)))
 function explore() {
-  router.push({ path: '/study', query: { ...(intentLevel.value && { level: intentLevel.value }), ...(intentFaculty.value && { faculty: intentFaculty.value }) } })
+  router.push({
+    path: path('study'),
+    query: { ...(intentLevel.value && { level: intentLevel.value }), ...(intentFaculty.value && { faculty: intentFaculty.value }) },
+  })
 }
 
 /* Programmes rail — those with real photography first */
-const featured = computed(() => [...programmes].filter((p) => p.lang === 'en').sort((a, b) => Number(!!b.image) - Number(!!a.image)).slice(0, 10))
+const featured = computed(() => [...programmes.value].sort((a, b) => Number(!!b.image) - Number(!!a.image)).slice(0, 10))
 const rail = ref<HTMLElement>()
 const scrollRail = (dir: 1 | -1) => rail.value?.scrollBy({ left: dir * Math.min(rail.value.clientWidth * 0.8, 720), behavior: 'smooth' })
 
-const facultyCards = computed(() => faculties.map((f) => ({ ...f, count: programmes.filter((p) => p.faculty === f.slug).length })))
+const facultyCards = computed(() =>
+  facultyNames.list().map((f) => ({ ...f, count: programmes.value.filter((p) => p.faculty === f.slug).length })),
+)
 
-/* Campuses come straight from the real "Where we are" page */
+/* Campuses come straight from the real "Where we are" page, in the current language */
 const campuses = shallowRef<Card[]>([])
-const campusPath = '/en/university/where-to-find-us'
-onMounted(async () => {
-  try {
-    const entry = await findEntry(campusPath)
-    if (!entry) return
-    const page = await loadPage(entry.id)
-    const block = page.blocks.find((b) => b.t === 'cards')
-    if (block?.t === 'cards') campuses.value = block.items
-  } catch {
-    /* section simply stays hidden */
-  }
+watch(
+  locale,
+  async (l) => {
+    try {
+      const entry = (await findEntry(campusPath[l])) ?? (await findEntry(campusPath.en))
+      if (!entry) return
+      const page = await loadPage(entry.id)
+      const block = page.blocks.find((b) => b.t === 'cards')
+      campuses.value = block?.t === 'cards' ? block.items : []
+    } catch {
+      /* section simply stays hidden */
+    }
+  },
+  { immediate: true },
+)
+
+/* Event titles stay in their original language; German shows the English listing. */
+const teasers = computed(() => {
+  const want = locale.value === 'it' ? 'it' : 'en'
+  const list = (events as EventTeaser[]).filter((e) => e.lang === want)
+  return (list.length ? list : (events as EventTeaser[]).filter((e) => e.lang === 'en')).slice(0, 6)
 })
 
-const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0, 6)
+const pageCount = computed(() => n(entries.value.length || stats.pages))
+const kWords = computed(() => n(Math.round(entries.value.reduce((s, e) => s + e.words, 0) / 1000) || Math.round(stats.words / 1000)))
 </script>
 
 <template>
@@ -61,37 +80,34 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <!-- Hero -->
     <section class="hero container">
       <div class="hero-copy">
-        <p class="eyebrow">Università della Svizzera italiana · Lugano</p>
-        <h1 class="hero-title">
-          {{ motto.split(',')[0] }},<br />
-          <span class="serif-accent">{{ motto.split(',')[1]?.trim() }}</span>
+        <p class="eyebrow">{{ m.home.eyebrow }}</p>
+        <h1 class="hero-title" :class="{ 'hero-title--long': (m.home.mottoA + m.home.mottoB).length > 32 }">
+          {{ m.home.mottoA }}<br />
+          <span class="serif-accent">{{ m.home.mottoB }}</span>
         </h1>
-        <p class="hero-lede">
-          One of Switzerland’s twelve certified public universities — six faculties, four campuses and a community from 115 countries, at the crossroads of
-          Italian culture and global research.
-        </p>
+        <p class="hero-lede">{{ m.home.lede }}</p>
 
         <form class="intent" @submit.prevent="explore">
           <label class="intent-part">
-            <span class="intent-k">I want to study</span>
-            <select v-model="intentLevel" aria-label="Level">
-              <option value="">any level</option>
-              <option v-for="l in levels" :key="l" :value="l">a {{ levelLabels[l] }}</option>
+            <span class="intent-k">{{ m.home.intentStudy }}</span>
+            <select v-model="intentLevel" :aria-label="m.home.intentLevelLabel">
+              <option value="">{{ m.home.anyLevel }}</option>
+              <option v-for="l in levels" :key="l" :value="l">{{ m.home.levelOption(m.levels[l]) }}</option>
             </select>
           </label>
           <label class="intent-part">
-            <span class="intent-k">in</span>
-            <select v-model="intentFaculty" aria-label="Field">
-              <option value="">any field</option>
-              <option v-for="f in faculties" :key="f.slug" :value="f.slug">{{ f.short }}</option>
+            <span class="intent-k">{{ m.home.intentIn }}</span>
+            <select v-model="intentFaculty" :aria-label="m.home.intentFieldLabel">
+              <option value="">{{ m.home.anyField }}</option>
+              <option v-for="f in facultyCards" :key="f.slug" :value="f.slug">{{ f.short }}</option>
             </select>
           </label>
-          <button type="submit" class="btn btn--signal">Show programmes <UiIcon name="arrow-right" :size="16" /></button>
+          <button type="submit" class="btn btn--signal">{{ m.home.showProgrammes }} <UiIcon name="arrow-right" :size="16" /></button>
         </form>
 
         <button type="button" class="hero-search" @click="palette.open()">
           <UiIcon name="search" :size="16" />
-          Or search {{ stats.pages.toLocaleString('en') }} pages — try “housing” or “scholarships”
+          {{ m.home.searchHint(pageCount) }}
           <kbd>/</kbd>
         </button>
       </div>
@@ -101,30 +117,30 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     </section>
 
     <!-- Key facts -->
-    <section class="container facts" aria-label="USI in numbers">
+    <section class="container facts" :aria-label="m.home.factsLabel">
       <dl>
-        <div v-for="(f, i) in keyFacts" :key="f.label" v-reveal="i * 90" class="fact">
-          <dt>{{ f.label }}</dt>
+        <div v-for="(f, i) in keyFacts" :key="f.key" v-reveal="i * 90" class="fact">
+          <dt>{{ m.home.facts[f.key] }}</dt>
           <dd><CountUp :value="f.value" :plain="'plain' in f" /></dd>
         </div>
       </dl>
-      <RouterLink :to="portraitPath" class="facts-src">Source: USI portrait <UiIcon name="arrow-right" :size="14" /></RouterLink>
+      <RouterLink :to="portraitPath[locale]" class="facts-src">{{ m.home.factsSource }} <UiIcon name="arrow-right" :size="14" /></RouterLink>
     </section>
 
     <!-- Programmes -->
     <section class="section">
       <div class="container">
-        <SectionHeading eyebrow="Study" title="Programmes taught by people who do the research." :lede="`${programmes.length} Bachelor and Master programmes, most of them taught in English.`">
+        <SectionHeading :eyebrow="m.home.study.eyebrow" :title="m.home.study.title" :lede="m.home.study.lede(programmes.length)">
           <template #actions>
             <div class="rail-actions">
-              <RouterLink to="/study" class="btn btn--ghost">All programmes <UiIcon name="arrow-right" :size="16" /></RouterLink>
-              <button type="button" class="rail-btn" @click="scrollRail(-1)"><UiIcon name="arrow-left" label="Scroll left" /></button>
-              <button type="button" class="rail-btn" @click="scrollRail(1)"><UiIcon name="arrow-right" label="Scroll right" /></button>
+              <RouterLink :to="path('study')" class="btn btn--ghost">{{ m.home.study.all }} <UiIcon name="arrow-right" :size="16" /></RouterLink>
+              <button type="button" class="rail-btn" @click="scrollRail(-1)"><UiIcon name="arrow-left" :label="m.home.study.scrollLeft" /></button>
+              <button type="button" class="rail-btn" @click="scrollRail(1)"><UiIcon name="arrow-right" :label="m.home.study.scrollRight" /></button>
             </div>
           </template>
         </SectionHeading>
       </div>
-      <div ref="rail" class="rail" tabindex="0" aria-label="Featured programmes">
+      <div ref="rail" class="rail" tabindex="0" :aria-label="m.home.study.rail">
         <div v-for="p in featured" :key="p.id" class="rail-item">
           <ProgrammeCard :programme="p" />
         </div>
@@ -134,16 +150,16 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <!-- Faculties -->
     <section class="section faculties">
       <div class="container">
-        <SectionHeading eyebrow="Faculties" title="Six faculties. One very connected campus." lede="Small enough to know your professors, broad enough to cross disciplines." />
+        <SectionHeading :eyebrow="m.home.faculties.eyebrow" :title="m.home.faculties.title" :lede="m.home.faculties.lede" />
         <ul class="bento" role="list">
           <li v-for="(f, i) in facultyCards" :key="f.slug" v-reveal="i * 70" class="bento-item" :style="{ '--fac': f.color }">
             <FacultyArt :variant="f.art" :color="f.color" :seed="i + 3" class="bento-art" />
             <div class="bento-body">
               <h3 class="bento-title">
-                <RouterLink :to="{ path: '/study', query: { faculty: f.slug } }" class="bento-link">{{ f.name }}</RouterLink>
+                <RouterLink :to="{ path: path('study'), query: { faculty: f.slug } }" class="bento-link">{{ f.name }}</RouterLink>
               </h3>
               <p class="bento-meta">
-                <span>{{ f.count ? `${f.count} programmes` : 'Research & doctoral studies' }}</span>
+                <span>{{ f.count ? m.home.faculties.count(f.count) : m.home.faculties.research }}</span>
                 <UiIcon name="arrow-up-right" :size="18" />
               </p>
             </div>
@@ -155,9 +171,9 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <!-- Campuses -->
     <section v-if="campuses.length" class="section">
       <div class="container">
-        <SectionHeading id="campus" eyebrow="Campuses" title="Between the lake and the Alps." lede="Four campuses in Lugano, Mendrisio and Bellinzona — each a short train ride from Milan and Zurich.">
+        <SectionHeading id="campus" :eyebrow="m.home.campus.eyebrow" :title="m.home.campus.title" :lede="m.home.campus.lede">
           <template #actions>
-            <RouterLink :to="campusPath" class="btn btn--ghost">Where we are <UiIcon name="arrow-right" :size="16" /></RouterLink>
+            <RouterLink :to="campusPath[locale]" class="btn btn--ghost">{{ m.home.campus.cta }} <UiIcon name="arrow-right" :size="16" /></RouterLink>
           </template>
         </SectionHeading>
         <ul class="campuses" role="list">
@@ -175,9 +191,9 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <!-- Explore by area -->
     <section class="section areas">
       <div class="container">
-        <SectionHeading eyebrow="Find your way" title="Everything USI publishes, organised." :lede="`${stats.pages.toLocaleString('en')} real pages, ${Math.round(stats.words / 1000)}k words — rebuilt into a structure you can actually navigate.`">
+        <SectionHeading :eyebrow="m.home.areas.eyebrow" :title="m.home.areas.title" :lede="m.home.areas.lede(pageCount, kWords)">
           <template #actions>
-            <RouterLink to="/explore" class="btn btn--ghost">Explore all <UiIcon name="arrow-right" :size="16" /></RouterLink>
+            <RouterLink :to="path('explore')" class="btn btn--ghost">{{ m.home.areas.all }} <UiIcon name="arrow-right" :size="16" /></RouterLink>
           </template>
         </SectionHeading>
         <div class="area-grid">
@@ -190,8 +206,8 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
                 <RouterLink :to="c.path">{{ c.title }}</RouterLink>
               </li>
             </ul>
-            <RouterLink :to="{ path: '/explore', query: { section: s.key } }" class="area-all">
-              All {{ s.label.toLowerCase() }} pages <UiIcon name="arrow-right" :size="14" />
+            <RouterLink :to="{ path: path('explore'), query: { section: s.key } }" class="area-all">
+              {{ m.home.areas.allIn(s.label) }} <UiIcon name="arrow-right" :size="14" />
             </RouterLink>
           </article>
         </div>
@@ -201,7 +217,7 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <!-- Events -->
     <section v-if="teasers.length" class="section events">
       <div class="container">
-        <SectionHeading eyebrow="Happening at USI" title="Lectures, seminars & events." lede="Live from the USI events calendar." />
+        <SectionHeading :eyebrow="m.home.events.eyebrow" :title="m.home.events.title" :lede="m.home.events.lede" />
         <ol class="event-list" role="list">
           <li v-for="(e, i) in teasers" :key="e.href" v-reveal="i * 60" class="event">
             <span class="event-n">{{ String(i + 1).padStart(2, '0') }}</span>
@@ -219,12 +235,12 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
     <section class="container">
       <div class="cta" v-reveal>
         <div>
-          <p class="eyebrow cta-eyebrow">Your next step</p>
-          <h2 class="cta-title">Come and see Lugano for yourself.</h2>
+          <p class="eyebrow cta-eyebrow">{{ m.home.cta.eyebrow }}</p>
+          <h2 class="cta-title">{{ m.home.cta.title }}</h2>
         </div>
         <div class="cta-actions">
-          <RouterLink to="/study" class="btn btn--signal">Find a programme <UiIcon name="arrow-right" :size="16" /></RouterLink>
-          <button type="button" class="btn cta-ghost" @click="palette.open()"><UiIcon name="search" :size="16" /> Search open days</button>
+          <RouterLink :to="path('study')" class="btn btn--signal">{{ m.home.cta.find }} <UiIcon name="arrow-right" :size="16" /></RouterLink>
+          <button type="button" class="btn cta-ghost" @click="palette.open()"><UiIcon name="search" :size="16" /> {{ m.home.cta.search }}</button>
         </div>
       </div>
     </section>
@@ -249,6 +265,9 @@ const teasers = (events as EventTeaser[]).filter((e) => e.lang === 'en').slice(0
   font-size: var(--step-5);
   line-height: 0.98;
   letter-spacing: -0.035em;
+}
+.hero-title--long {
+  font-size: clamp(2.6rem, 1.6rem + 3.6vw, 5.4rem);
 }
 .hero-lede {
   max-width: 52ch;
