@@ -94,6 +94,12 @@ async function main() {
   const covered = new Set(state.covered)
   const seen = new Set([...Object.keys(state.pages), ...state.queue, ...(state.itQueue ?? [])])
 
+  /** An Italian alternate of a fetched page that hasn't been fetched itself. */
+  const nextTwin = () => {
+    for (const p of covered) if (p.startsWith('/it/') && !state.pages[p] && allowed(p)) return p
+    return null
+  }
+
   const allowed = await loadRobots()
   console.log(`crawl-delay ${delay}ms, ${Object.keys(state.pages).length} pages cached`)
 
@@ -101,7 +107,10 @@ async function main() {
   const fetched = () => Object.values(state.pages).filter((p) => p.status === 200).length
 
   while (fetched() < MAX_PAGES) {
-    let path = state.queue.shift()
+    // Priority: Italian twins of English pages we already have (so both
+    // languages stay in step), then the English queue, then Italian-only pages.
+    let path = nextTwin()
+    if (!path) path = state.queue.shift()
     if (!path) {
       if (state.itQueue === null) {
         console.log('English site exhausted — loading Italian sitemap')
@@ -109,7 +118,6 @@ async function main() {
         state.itQueue.forEach((p) => seen.add(p))
       }
       path = state.itQueue.shift()
-      while (path && covered.has(path)) path = state.itQueue.shift()
       if (!path) break
     }
     if (state.pages[path] || !allowed(path)) continue
