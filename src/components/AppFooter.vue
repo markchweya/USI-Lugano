@@ -87,7 +87,7 @@ const year = new Date().getFullYear()
 .langs {
   margin-top: 0.5rem;
 }
-.langs :deep(.inline-link) {
+.langs :deep(.inline-link:not(.active)) {
   color: var(--ink-2);
 }
 .motto {

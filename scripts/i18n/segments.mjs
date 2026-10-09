@@ -20,6 +20,7 @@ export function pageSegments(page) {
   }
   add(page.title)
   add(page.description)
+  add(page.section)
   page.breadcrumb?.forEach((c) => add(c.label))
   for (const b of page.blocks ?? []) {
     switch (b.t) {
@@ -92,6 +93,7 @@ export function translatePage(page, memory) {
       translated: true,
       title: tr(page.title),
       description: tr(page.description),
+      section: tr(page.section),
       crumbs: page.crumbs.map((c) => tr(c)),
       breadcrumb: page.breadcrumb.map((c) => ({ label: tr(c.label), path: c.path })),
       blocks: page.blocks.map((b) => {
