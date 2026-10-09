@@ -139,7 +139,9 @@ const it: Messages = {
       search: 'Cerca le porte aperte',
     },
     scene: {
-      label: 'Illustrazione del lago di Lugano tra il Monte San Salvatore e il Monte Brè',
+      label: 'Il Campus Ovest dell’USI a Lugano, con studenti nel cortile e il Monte San Salvatore sullo sfondo',
+      caption: 'Campus Ovest, Lugano',
+      credit: 'Foto: USI',
     },
   },
 

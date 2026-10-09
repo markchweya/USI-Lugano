@@ -141,7 +141,9 @@ const en = {
       search: 'Search open days',
     },
     scene: {
-      label: 'Illustration of Lake Lugano between Monte San Salvatore and Monte Brè',
+      label: 'USI’s West Campus in Lugano, with students in the courtyard and Monte San Salvatore behind',
+      caption: 'West Campus, Lugano',
+      credit: 'Photo: USI',
     },
   },
 

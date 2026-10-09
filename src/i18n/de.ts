@@ -142,7 +142,9 @@ const de: Messages = {
       search: 'Infotage suchen',
     },
     scene: {
-      label: 'Illustration des Luganersees zwischen Monte San Salvatore und Monte Brè',
+      label: 'Der Campus West der USI in Lugano mit Studierenden im Innenhof und dem Monte San Salvatore im Hintergrund',
+      caption: 'Campus West, Lugano',
+      credit: 'Foto: USI',
     },
   },
 
