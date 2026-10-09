@@ -37,7 +37,7 @@ const year = new Date().getFullYear()
         </nav>
       </div>
 
-      <p class="wordmark" aria-hidden="true">Lugano<span>·</span>Mendrisio<span>·</span>Bellinzona</p>
+      <div class="wordmark-wrap"><p class="wordmark" aria-hidden="true">Lugano<span>·</span>Mendrisio<span>·</span>Bellinzona</p></div>
 
       <div class="bottom">
         <p>
@@ -127,11 +127,15 @@ address {
 .cols a:hover {
   color: #ff6a45;
 }
+.wordmark-wrap {
+  container-type: inline-size;
+}
 .wordmark {
   margin: clamp(3rem, 8vw, 6rem) 0 0;
   overflow: hidden;
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 9vw, 9rem);
+  /* Sized to the footer's own width (container query units), so the three towns always fit. */
+  font-size: clamp(1.2rem, 7.6cqi, 7.3rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   white-space: nowrap;
@@ -159,5 +163,11 @@ address {
 .bottom p:last-child {
   display: flex;
   gap: 0.5rem;
+}
+/* Fraunces' optical sizing makes small text relatively wider, so wide footers can go bigger. */
+@container (min-width: 900px) {
+  .wordmark {
+    font-size: clamp(1.2rem, 9.1cqi, 7.4rem);
+  }
 }
 </style>
