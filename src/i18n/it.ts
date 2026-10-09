@@ -80,7 +80,7 @@ const it: Messages = {
     eyebrow: 'Università della Svizzera italiana · Lugano',
     mottoA: 'Creare liberamente,',
     mottoB: 'agire responsabilmente.',
-    lede: 'Una delle dodici università pubbliche accreditate della Svizzera: sei facoltà, quattro campus e una comunità da 115 Paesi, all’incrocio tra cultura italiana e ricerca internazionale.',
+    lede: 'Una delle dodici università pubbliche ufficialmente riconosciute in Svizzera: sei Facoltà, quattro campus e una comunità da 115 Paesi, all’incrocio tra cultura italiana e ricerca internazionale.',
     intentStudy: 'Cerco',
     anyLevel: 'un corso di studio',
     levelOption: (level) => `un ${level}`,
@@ -93,7 +93,7 @@ const it: Messages = {
     factsLabel: 'L’USI in cifre',
     facts: {
       students: 'studenti',
-      staff: 'professori e ricercatori',
+      staff: 'docenti e ricercatori',
       countries: 'Paesi rappresentati',
       founded: 'anno di fondazione',
     },
